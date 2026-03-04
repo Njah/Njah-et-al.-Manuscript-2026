@@ -1,0 +1,8 @@
+chr	-	ID	LABEL	START	END	COLOR
+chr	-	Fvb1	Fvb1	0	24253023	red
+chr	-	Fvb2	Fvb2	0	29351230	green
+chr	-	Fvb3	Fvb3	0	38324302	blue
+chr	-	Fvb4	Fvb4	0	33907851	vermilion
+chr	-	Fvb5	Fvb5	0	29430145	brown
+chr	-	Fvb6	Fvb6	0	39795230	orange
+chr	-	Fvb7	Fvb7	0	24229589	cyan

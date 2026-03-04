@@ -1,0 +1,457 @@
+---
+title: "Latest DMRcalling_Annotation files"
+author: "Relindis"
+date: '2023-02-17'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(DMRcaller)
+
+AK0H.methylationData <- readBismark("AK0H.CX_report.txt.gz")
+
+AK42D.methylationData <- readBismark("AK42D.CX_report.txt.gz")
+
+AK.methylationDataList <- GRangesList("AK0H" = AK0H.methylationData,"AK42D" = AK42D.methylationData)
+
+DMRsBinsAKCG.100bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsAKCG.100bp_0mingap, "DMRsBinsAKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsAKCHG.100bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsAKCHG.100bp_0mingap, "DMRsBinsAKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsAKCHH.50bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsAKCHH.50bp_0mingap, "DMRsBinsAKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+```
+
+
+
+```{r setup, include=FALSE}
+
+
+##Import gff3 files
+##Required packages
+
+library("rtracklayer")
+
+GE_genes.a2=import.gff3("FvH4a2_ALL_genes.gff3")
+GE_TES.a2=import.gff3("FvH4a2_ALL_TES.gff3")
+GE_TSS.a2=import.gff3("FvH4a2_ALL_TSS.gff3")
+
+##Import annotation files
+# Load Genomation
+library (genomation)
+
+GEs_ALL_noExons.a2 = readGeneric("/data2/Relindis_data2/WGBS/WGBS_R_analysis/CX_report_files/FvH4a2_ALL_GEs_noExons_Relindis_final.txt", chr = 1, start = 2, end = 3, strand = 4, meta.cols = list(type=5,phase=6,ID=7), keep.all.metadata = TRUE, zero.based = FALSE, remove.unusual = FALSE, header = TRUE, skip = 0, sep = "\t")
+
+```
+
+##Annotate DMRs
+
+```{r setup, include=FALSE}
+
+library(splicejam)
+
+GenesDMRsBinsAKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsAKCG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsAKCG.100bp_0mingap,"GenesDMRsBinsAKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsAKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsAKCG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsAKCG.100bp_0mingap,"TSSDMRsBinsAKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsAKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsAKCG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsAKCG.100bp_0mingap,"TESDMRsBinsAKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsAKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsAKCHG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsAKCHG.100bp_0mingap,"GenesDMRsBinsAKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsAKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsAKCHG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsAKCHG.100bp_0mingap,"TSSDMRsBinsAKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsAKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsAKCHG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsAKCHG.100bp_0mingap,"TESDMRsBinsAKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+GenesDMRsBinsAKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsAKCHH.50bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsAKCHH.50bp_0mingap,"GenesDMRsBinsAKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsAKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsAKCHH.50bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsAKCHH.50bp_0mingap,"TSSDMRsBinsAKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsAKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsAKCHH.50bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsAKCHH.50bp_0mingap,"TESDMRsBinsAKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+#########################################
+
+AL0H.methylationData <- readBismark("AL0H.CX_report.txt.gz")
+
+AL42D.methylationData <- readBismark("AL42D.CX_report.txt.gz")
+
+AL.methylationDataList <- GRangesList("AL0H" = AL0H.methylationData,"AL42D" = AL42D.methylationData)
+
+DMRsBinsALCG.100bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsALCG.100bp_0mingap, "DMRsBinsALCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsALCHG.100bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsALCHG.100bp_0mingap, "DMRsBinsALCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsALCHH.50bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsALCHH.50bp_0mingap, "DMRsBinsALCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+GenesDMRsBinsALCG.100bp_0mingap = annotateGRfromGR(DMRsBinsALCG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsALCG.100bp_0mingap,"GenesDMRsBinsALCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsALCG.100bp_0mingap = annotateGRfromGR(DMRsBinsALCG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsALCG.100bp_0mingap,"TSSDMRsBinsALCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsALCG.100bp_0mingap = annotateGRfromGR(DMRsBinsALCG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsALCG.100bp_0mingap,"TESDMRsBinsALCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsALCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsALCHG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsALCHG.100bp_0mingap,"GenesDMRsBinsALCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsALCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsALCHG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsALCHG.100bp_0mingap,"TSSDMRsBinsALCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsALCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsALCHG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsALCHG.100bp_0mingap,"TESDMRsBinsALCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsALCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsALCHH.50bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsALCHH.50bp_0mingap,"GenesDMRsBinsALCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsALCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsALCHH.50bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsALCHH.50bp_0mingap,"TSSDMRsBinsALCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsALCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsALCHH.50bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsALCHH.50bp_0mingap,"TESDMRsBinsALCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+#########################################################
+
+FL0H.methylationData <- readBismark("FL0H.CX_report.txt.gz")
+
+FL42D.methylationData <- readBismark("FL42D.CX_report.txt.gz")
+
+FL.methylationDataList <- GRangesList("FL0H" = FL0H.methylationData,"FL42D" = FL42D.methylationData)
+
+DMRsBinsFLCG.100bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsFLCG.100bp_0mingap, "DMRsBinsFLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsFLCHG.100bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsFLCHG.100bp_0mingap, "DMRsBinsFLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsFLCHH.50bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsFLCHH.50bp_0mingap, "DMRsBinsFLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsFLCG.100bp_0mingap = annotateGRfromGR(DMRsBinsFLCG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsFLCG.100bp_0mingap,"GenesDMRsBinsFLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsFLCG.100bp_0mingap = annotateGRfromGR(DMRsBinsFLCG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsFLCG.100bp_0mingap,"TSSDMRsBinsFLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsFLCG.100bp_0mingap = annotateGRfromGR(DMRsBinsFLCG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsFLCG.100bp_0mingap,"TESDMRsBinsFLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsFLCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsFLCHG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsFLCHG.100bp_0mingap,"GenesDMRsBinsFLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsFLCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsFLCHG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsFLCHG.100bp_0mingap,"TSSDMRsBinsFLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsFLCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsFLCHG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsFLCHG.100bp_0mingap,"TESDMRsBinsFLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsFLCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsFLCHH.50bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsFLCHH.50bp_0mingap,"GenesDMRsBinsFLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsFLCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsFLCHH.50bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsFLCHH.50bp_0mingap,"TSSDMRsBinsFLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsFLCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsFLCHH.50bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsFLCHH.50bp_0mingap,"TESDMRsBinsFLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+######################################################
+
+
+FK0H.methylationData <- readBismark("FK0H.CX_report.txt.gz")
+
+FK42D.methylationData <- readBismark("FK42D.CX_report.txt.gz")
+
+FK.methylationDataList <- GRangesList("FK0H" = FK0H.methylationData,"FK42D" = FK42D.methylationData)
+
+DMRsBinsFKCG.100bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsFKCG.100bp_0mingap, "DMRsBinsFKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsFKCHG.100bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsFKCHG.100bp_0mingap, "DMRsBinsFKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsFKCHH.50bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsFKCHH.50bp_0mingap, "DMRsBinsFKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+GenesDMRsBinsFKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsFKCG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsFKCG.100bp_0mingap,"GenesDMRsBinsFKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsFKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsFKCG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsFKCG.100bp_0mingap,"TSSDMRsBinsFKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsFKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsFKCG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsFKCG.100bp_0mingap,"TESDMRsBinsFKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsFKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsFKCHG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsFKCHG.100bp_0mingap,"GenesDMRsBinsFKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsFKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsFKCHG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsFKCHG.100bp_0mingap,"TSSDMRsBinsFKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsFKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsFKCHG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsFKCHG.100bp_0mingap,"TESDMRsBinsFKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsFKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsFKCHH.50bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsFKCHH.50bp_0mingap,"GenesDMRsBinsFKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsFKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsFKCHH.50bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsFKCHH.50bp_0mingap,"TSSDMRsBinsFKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsFKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsFKCHH.50bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsFKCHH.50bp_0mingap,"TESDMRsBinsFKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+##########################################
+
+
+NL0H.methylationData <- readBismark("NL0H.CX_report.txt.gz")
+
+NL42D.methylationData <- readBismark("NL42D.CX_report.txt.gz")
+
+NL.methylationDataList <- GRangesList("NL0H" = NL0H.methylationData,"NL42D" = NL42D.methylationData)
+
+DMRsBinsNLCG.100bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsNLCG.100bp_0mingap, "DMRsBinsNLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsNLCHG.100bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsNLCHG.100bp_0mingap, "DMRsBinsNLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsNLCHH.50bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsNLCHH.50bp_0mingap, "DMRsBinsNLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsNLCG.100bp_0mingap = annotateGRfromGR(DMRsBinsNLCG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsNLCG.100bp_0mingap,"GenesDMRsBinsNLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsNLCG.100bp_0mingap = annotateGRfromGR(DMRsBinsNLCG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsNLCG.100bp_0mingap,"TSSDMRsBinsNLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsNLCG.100bp_0mingap = annotateGRfromGR(DMRsBinsNLCG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsNLCG.100bp_0mingap,"TESDMRsBinsNLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsNLCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsNLCHG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsNLCHG.100bp_0mingap,"GenesDMRsBinsNLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsNLCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsNLCHG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsNLCHG.100bp_0mingap,"TSSDMRsBinsNLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsNLCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsNLCHG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsNLCHG.100bp_0mingap,"TESDMRsBinsNLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsNLCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsNLCHH.50bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsNLCHH.50bp_0mingap,"GenesDMRsBinsNLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsNLCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsNLCHH.50bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsNLCHH.50bp_0mingap,"TSSDMRsBinsNLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsNLCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsNLCHH.50bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsNLCHH.50bp_0mingap,"TESDMRsBinsNLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+###############################################
+
+
+NK0H.methylationData <- readBismark("NK0H.CX_report.txt.gz")
+
+NK42D.methylationData <- readBismark("NK42D.CX_report.txt.gz")
+
+NK.methylationDataList <- GRangesList("NK0H" = NK0H.methylationData,"NK42D" = NK42D.methylationData)
+
+DMRsBinsNKCG.100bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsNKCG.100bp_0mingap, "DMRsBinsNKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsNKCHG.100bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsNKCHG.100bp_0mingap, "DMRsBinsNKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+DMRsBinsNKCHH.50bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
+
+write.table(DMRsBinsNKCHH.50bp_0mingap, "DMRsBinsNKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsNKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsNKCG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsNKCG.100bp_0mingap,"GenesDMRsBinsNKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsNKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsNKCG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsNKCG.100bp_0mingap,"TSSDMRsBinsNKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsNKCG.100bp_0mingap = annotateGRfromGR(DMRsBinsNKCG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsNKCG.100bp_0mingap,"TESDMRsBinsNKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsNKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsNKCHG.100bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsNKCHG.100bp_0mingap,"GenesDMRsBinsNKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsNKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsNKCHG.100bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsNKCHG.100bp_0mingap,"TSSDMRsBinsNKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsNKCHG.100bp_0mingap = annotateGRfromGR(DMRsBinsNKCHG.100bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsNKCHG.100bp_0mingap,"TESDMRsBinsNKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+GenesDMRsBinsNKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsNKCHH.50bp_0mingap,GE_genes.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GenesDMRsBinsNKCHH.50bp_0mingap,"GenesDMRsBinsNKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TSSDMRsBinsNKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsNKCHH.50bp_0mingap,GE_TSS.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TSSDMRsBinsNKCHH.50bp_0mingap,"TSSDMRsBinsNKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+TESDMRsBinsNKCHH.50bp_0mingap = annotateGRfromGR(DMRsBinsNKCHH.50bp_0mingap,GE_TES.a2,grOL = NULL,numAsStrings = FALSE,stringShriALFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShriALFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(TESDMRsBinsNKCHH.50bp_0mingap,"TESDMRsBinsNKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+```
+
+##############Commands for annotating DMRs merging them by context
+
+
+
+```{r cars}
+GE_TSSgenesTESDMRsBinsAKCG = annotateGRfromGR(GEs_ALL_noExons.a2,DMRsBinsAKCG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsAKCG_CHG = annotateGRfromGR(GE_TSSgenesTESDMRsBinsAKCG,DMRsBinsAKCHG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsAKCG_CHG_CHH = annotateGRfromGR(GE_TSSgenesTESDMRsBinsAKCG_CHG,DMRsBinsAKCHH.50bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GE_TSSgenesTESDMRsBinsAKCG_CHG_CHH, "GE_TSSgenesTESDMRsBinsAKCG_CHG_CHH.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+GE_TSSgenesTESDMRsBinsALCG = annotateGRfromGR(GEs_ALL_noExons.a2,DMRsBinsALCG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsALCG_CHG = annotateGRfromGR(GE_TSSgenesTESDMRsBinsALCG,DMRsBinsALCHG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsALCG_CHG_CHH = annotateGRfromGR(GE_TSSgenesTESDMRsBinsALCG_CHG,DMRsBinsALCHH.50bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GE_TSSgenesTESDMRsBinsALCG_CHG_CHH, "GE_TSSgenesTESDMRsBinsALCG_CHG_CHH.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+#################################
+
+GE_TSSgenesTESDMRsBinsFKCG = annotateGRfromGR(GEs_ALL_noExons.a2,DMRsBinsFKCG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsFKCG_CHG = annotateGRfromGR(GE_TSSgenesTESDMRsBinsFKCG,DMRsBinsFKCHG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsFKCG_CHG_CHH = annotateGRfromGR(GE_TSSgenesTESDMRsBinsFKCG_CHG,DMRsBinsFKCHH.50bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GE_TSSgenesTESDMRsBinsFKCG_CHG_CHH, "GE_TSSgenesTESDMRsBinsFKCG_CHG_CHH.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+GE_TSSgenesTESDMRsBinsFLCG = annotateGRfromGR(GEs_ALL_noExons.a2,DMRsBinsFLCG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsFLCG_CHG = annotateGRfromGR(GE_TSSgenesTESDMRsBinsFLCG,DMRsBinsFLCHG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsFLCG_CHG_CHH = annotateGRfromGR(GE_TSSgenesTESDMRsBinsFLCG_CHG,DMRsBinsFLCHH.50bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GE_TSSgenesTESDMRsBinsFLCG_CHG_CHH, "GE_TSSgenesTESDMRsBinsFLCG_CHG_CHH.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+######################################
+
+GE_TSSgenesTESDMRsBinsNKCG = annotateGRfromGR(GEs_ALL_noExons.a2,DMRsBinsNKCG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsNKCG_CHG = annotateGRfromGR(GE_TSSgenesTESDMRsBinsNKCG,DMRsBinsNKCHG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsNKCG_CHG_CHH = annotateGRfromGR(GE_TSSgenesTESDMRsBinsNKCG_CHG,DMRsBinsNKCHH.50bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GE_TSSgenesTESDMRsBinsNKCG_CHG_CHH, "GE_TSSgenesTESDMRsBinsNKCG_CHG_CHH.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+GE_TSSgenesTESDMRsBinsNLCG = annotateGRfromGR(GEs_ALL_noExons.a2,DMRsBinsNLCG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsNLCG_CHG = annotateGRfromGR(GE_TSSgenesTESDMRsBinsNLCG,DMRsBinsNLCHG.100bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+GE_TSSgenesTESDMRsBinsNLCG_CHG_CHH = annotateGRfromGR(GE_TSSgenesTESDMRsBinsNLCG_CHG,DMRsBinsNLCHH.50bp_0mingap,grOL = NULL,numAsStrings = FALSE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+write.table(GE_TSSgenesTESDMRsBinsNLCG_CHG_CHH, "GE_TSSgenesTESDMRsBinsNLCG_CHG_CHH.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+```
+
+

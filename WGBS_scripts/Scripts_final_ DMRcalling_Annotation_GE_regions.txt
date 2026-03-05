@@ -14,15 +14,15 @@ AK42D.methylationData <- readBismark("AK42D.CX_report.txt.gz")
 
 AK.methylationDataList <- GRangesList("AK0H" = AK0H.methylationData,"AK42D" = AK42D.methylationData)
 
-DMRsBinsAKCG.100bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsAKCG.100bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsAKCG.100bp_0mingap, "DMRsBinsAKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsAKCHG.100bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsAKCHG.100bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsAKCHG.100bp_0mingap, "DMRsBinsAKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsAKCHH.50bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 25,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsAKCHH.50bp_0mingap <- computeDMRs(AK.methylationDataList[["AK0H"]],AK.methylationDataList[["AK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsAKCHH.50bp_0mingap, "DMRsBinsAKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -102,15 +102,15 @@ AL42D.methylationData <- readBismark("AL42D.CX_report.txt.gz")
 
 AL.methylationDataList <- GRangesList("AL0H" = AL0H.methylationData,"AL42D" = AL42D.methylationData)
 
-DMRsBinsALCG.100bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsALCG.100bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsALCG.100bp_0mingap, "DMRsBinsALCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsALCHG.100bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsALCHG.100bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsALCHG.100bp_0mingap, "DMRsBinsALCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsALCHH.50bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 25,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsALCHH.50bp_0mingap <- computeDMRs(AL.methylationDataList[["AL0H"]],AL.methylationDataList[["AL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsALCHH.50bp_0mingap, "DMRsBinsALCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -160,15 +160,15 @@ FL42D.methylationData <- readBismark("FL42D.CX_report.txt.gz")
 
 FL.methylationDataList <- GRangesList("FL0H" = FL0H.methylationData,"FL42D" = FL42D.methylationData)
 
-DMRsBinsFLCG.100bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsFLCG.100bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsFLCG.100bp_0mingap, "DMRsBinsFLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsFLCHG.100bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsFLCHG.100bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsFLCHG.100bp_0mingap, "DMRsBinsFLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsFLCHH.50bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 25,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsFLCHH.50bp_0mingap <- computeDMRs(FL.methylationDataList[["FL0H"]],FL.methylationDataList[["FL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsFLCHH.50bp_0mingap, "DMRsBinsFLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -220,15 +220,15 @@ FK42D.methylationData <- readBismark("FK42D.CX_report.txt.gz")
 
 FK.methylationDataList <- GRangesList("FK0H" = FK0H.methylationData,"FK42D" = FK42D.methylationData)
 
-DMRsBinsFKCG.100bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsFKCG.100bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsFKCG.100bp_0mingap, "DMRsBinsFKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsFKCHG.100bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsFKCHG.100bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsFKCHG.100bp_0mingap, "DMRsBinsFKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsFKCHH.50bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 25,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsFKCHH.50bp_0mingap <- computeDMRs(FK.methylationDataList[["FK0H"]],FK.methylationDataList[["FK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsFKCHH.50bp_0mingap, "DMRsBinsFKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -279,15 +279,15 @@ NL42D.methylationData <- readBismark("NL42D.CX_report.txt.gz")
 
 NL.methylationDataList <- GRangesList("NL0H" = NL0H.methylationData,"NL42D" = NL42D.methylationData)
 
-DMRsBinsNLCG.100bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsNLCG.100bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsNLCG.100bp_0mingap, "DMRsBinsNLCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsNLCHG.100bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsNLCHG.100bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsNLCHG.100bp_0mingap, "DMRsBinsNLCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsNLCHH.50bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 25,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsNLCHH.50bp_0mingap <- computeDMRs(NL.methylationDataList[["NL0H"]],NL.methylationDataList[["NL42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsNLCHH.50bp_0mingap, "DMRsBinsNLCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
@@ -339,15 +339,15 @@ NK42D.methylationData <- readBismark("NK42D.CX_report.txt.gz")
 
 NK.methylationDataList <- GRangesList("NK0H" = NK0H.methylationData,"NK42D" = NK42D.methylationData)
 
-DMRsBinsNKCG.100bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsNKCG.100bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsNKCG.100bp_0mingap, "DMRsBinsNKCG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsNKCHG.100bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 50,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsNKCHG.100bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CHG", method = "bins", binSize = 100,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsNKCHG.100bp_0mingap, "DMRsBinsNKCHG.100bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 
-DMRsBinsNKCHH.50bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 25,minReadsPerCytosine = 4, cores = 1)
+DMRsBinsNKCHH.50bp_0mingap <- computeDMRs(NK.methylationDataList[["NK0H"]],NK.methylationDataList[["NK42D"]], regions = NULL,context = "CHH", method = "bins", binSize = 50,test = "score", pValueThreshold = 0.01, minCytosinesCount = 4,minProportionDifference = 0.2, minGap = 0, minSize = 0,minReadsPerCytosine = 4, cores = 1)
 
 write.table(DMRsBinsNKCHH.50bp_0mingap, "DMRsBinsNKCHH.50bp_0mingap.txt", sep = "\t", quote = FALSE, row.names = FALSE)
 

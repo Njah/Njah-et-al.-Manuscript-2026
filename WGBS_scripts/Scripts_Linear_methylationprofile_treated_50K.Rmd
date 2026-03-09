@@ -1,0 +1,680 @@
+---
+title: "Linear_chromosome methylation profile"
+author: "Relindis"
+date: '2023-04-11'
+output: html_document
+---
+
+```{r}
+library("DMRcaller")
+
+AK42D.methylationData <- readBismark("AK42D.CX_report.txt.gz")
+
+FK42D.methylationData <- readBismark("FK42D.CX_report.txt.gz")
+
+NK42D.methylationData <- readBismark("NK42D.CX_report.txt.gz")
+
+AL42D.methylationData <- readBismark("AL42D.CX_report.txt.gz")
+
+FL42D.methylationData <- readBismark("FL42D.CX_report.txt.gz")
+
+NL42D.methylationData <- readBismark("NL42D.CX_report.txt.gz")
+
+#Store data from all files in a GRanges object
+
+methylationDataList_A_F_N <- GRangesList("AK42D" = AK42D.methylationData, "AL42D" = AL42D.methylationData,"FK42D" = FK42D.methylationData,"FL42D" = FL42D.methylationData,"NK42D" = NK42D.methylationData, "NL42D" = NL42D.methylationData)
+
+#Compute methylation profile for Fvb1, CG context using a window of 200k
+
+regions_A_F_N.Fvb1 <- GRanges(seqnames = Rle("Fvb1"), ranges = IRanges(1,24253023))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb1 <- GRangesList("AK42D" = profileAK42D.CG.Fvb1, "AL42D" = profileAL42D.CG.Fvb1, "FK42D" = profileFK42D.CG.Fvb1, "FL42D" = profileFL42D.CG.Fvb1, "NK42D" = profileNK42D.CG.Fvb1, "NL42D" = profileNL42D.CG.Fvb1)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb1=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb1,autoscale = FALSE,labels = NULL,title="CG-42D methylation on chr 1",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb1, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb1 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb1, "AL42D" = profileAL42D.CHG.Fvb1, "FK42D" = profileFK42D.CHG.Fvb1, "FL42D" = profileFL42D.CHG.Fvb1, "NK42D" = profileNK42D.CHG.Fvb1, "NL42D" = profileNL42D.CHG.Fvb1)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb1=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb1,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on chr 1",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb1, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb1 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb1, "AL42D" = profileAL42D.CHH.Fvb1, "FK42D" = profileFK42D.CHH.Fvb1, "FL42D" = profileFL42D.CHH.Fvb1, "NK42D" = profileNK42D.CHH.Fvb1, "NL42D" = profileNL42D.CHH.Fvb1)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb1=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb1,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on chr 1",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb2, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb2 <- GRanges(seqnames = Rle("Fvb2"), ranges = IRanges(1,29351230))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb2 <- GRangesList("AK42D" = profileAK42D.CG.Fvb2, "AL42D" = profileAL42D.CG.Fvb2, "FK42D" = profileFK42D.CG.Fvb2, "FL42D" = profileFL42D.CG.Fvb2, "NK42D" = profileNK42D.CG.Fvb2, "NL42D" = profileNL42D.CG.Fvb2)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb2=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb2,autoscale = FALSE,labels = NULL,title="CG-42D methylation on Chr 2",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb2, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb2 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb2, "AL42D" = profileAL42D.CHG.Fvb2, "FK42D" = profileFK42D.CHG.Fvb2, "FL42D" = profileFL42D.CHG.Fvb2, "NK42D" = profileNK42D.CHG.Fvb2, "NL42D" = profileNL42D.CHG.Fvb2)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb2=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb2,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on Chr 2",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb2, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb2 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb2, "AL42D" = profileAL42D.CHH.Fvb2, "FK42D" = profileFK42D.CHH.Fvb2, "FL42D" = profileFL42D.CHH.Fvb2, "NK42D" = profileNK42D.CHH.Fvb2, "NL42D" = profileNL42D.CHH.Fvb2)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb2=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb2,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on Chr 2",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb3, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb3 <- GRanges(seqnames = Rle("Fvb3"), ranges = IRanges(1,38324302))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb3 <- GRangesList("AK42D" = profileAK42D.CG.Fvb3, "AL42D" = profileAL42D.CG.Fvb3, "FK42D" = profileFK42D.CG.Fvb3, "FL42D" = profileFL42D.CG.Fvb3, "NK42D" = profileNK42D.CG.Fvb3, "NL42D" = profileNL42D.CG.Fvb3)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb3=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb3,autoscale = FALSE,labels = NULL,title="CG-42D methylation on Chr 3",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb3, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb3 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb3, "AL42D" = profileAL42D.CHG.Fvb3, "FK42D" = profileFK42D.CHG.Fvb3, "FL42D" = profileFL42D.CHG.Fvb3, "NK42D" = profileNK42D.CHG.Fvb3, "NL42D" = profileNL42D.CHG.Fvb3)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb3=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb3,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on Chr 3",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb3, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb3 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb3, "AL42D" = profileAL42D.CHH.Fvb3, "FK42D" = profileFK42D.CHH.Fvb3, "FL42D" = profileFL42D.CHH.Fvb3, "NK42D" = profileNK42D.CHH.Fvb3, "NL42D" = profileNL42D.CHH.Fvb3)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb3=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb3,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on Chr 3",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb4, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb4 <- GRanges(seqnames = Rle("Fvb4"), ranges = IRanges(1,33907851))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb4 <- GRangesList("AK42D" = profileAK42D.CG.Fvb4, "AL42D" = profileAL42D.CG.Fvb4, "FK42D" = profileFK42D.CG.Fvb4, "FL42D" = profileFL42D.CG.Fvb4, "NK42D" = profileNK42D.CG.Fvb4, "NL42D" = profileNL42D.CG.Fvb4)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb4=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb4,autoscale = FALSE,labels = NULL,title="CG-42D methylation on Chr 4",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb4, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb4 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb4, "AL42D" = profileAL42D.CHG.Fvb4, "FK42D" = profileFK42D.CHG.Fvb4, "FL42D" = profileFL42D.CHG.Fvb4, "NK42D" = profileNK42D.CHG.Fvb4, "NL42D" = profileNL42D.CHG.Fvb4)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb4=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb4,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on Chr 4",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb4, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb4 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb4, "AL42D" = profileAL42D.CHH.Fvb4, "FK42D" = profileFK42D.CHH.Fvb4, "FL42D" = profileFL42D.CHH.Fvb4, "NK42D" = profileNK42D.CHH.Fvb4, "NL42D" = profileNL42D.CHH.Fvb4)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb4=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb4,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on Chr 4",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb5, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb5 <- GRanges(seqnames = Rle("Fvb5"), ranges = IRanges(1,29430145))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb5 <- GRangesList("AK42D" = profileAK42D.CG.Fvb5, "AL42D" = profileAL42D.CG.Fvb5, "FK42D" = profileFK42D.CG.Fvb5, "FL42D" = profileFL42D.CG.Fvb5, "NK42D" = profileNK42D.CG.Fvb5, "NL42D" = profileNL42D.CG.Fvb5)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb5=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb5,autoscale = FALSE,labels = NULL,title="CG-42D methylation on Chr 5",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb5, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb5 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb5, "AL42D" = profileAL42D.CHG.Fvb5, "FK42D" = profileFK42D.CHG.Fvb5, "FL42D" = profileFL42D.CHG.Fvb5, "NK42D" = profileNK42D.CHG.Fvb5, "NL42D" = profileNL42D.CHG.Fvb5)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb5=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb5,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on Chr 5",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb5, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb5 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb5, "AL42D" = profileAL42D.CHH.Fvb5, "FK42D" = profileFK42D.CHH.Fvb5, "FL42D" = profileFL42D.CHH.Fvb5, "NK42D" = profileNK42D.CHH.Fvb5, "NL42D" = profileNL42D.CHH.Fvb5)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb5=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb5,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on Chr 5",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb6, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb6 <- GRanges(seqnames = Rle("Fvb6"), ranges = IRanges(1,39795230))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb6 <- GRangesList("AK42D" = profileAK42D.CG.Fvb6, "AL42D" = profileAL42D.CG.Fvb6, "FK42D" = profileFK42D.CG.Fvb6, "FL42D" = profileFL42D.CG.Fvb6, "NK42D" = profileNK42D.CG.Fvb6, "NL42D" = profileNL42D.CG.Fvb6)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb6=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb6,autoscale = FALSE,labels = NULL,title="CG-42D methylation on Chr 6",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb6, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb6 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb6, "AL42D" = profileAL42D.CHG.Fvb6, "FK42D" = profileFK42D.CHG.Fvb6, "FL42D" = profileFL42D.CHG.Fvb6, "NK42D" = profileNK42D.CHG.Fvb6, "NL42D" = profileNL42D.CHG.Fvb6)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb6=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb6,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on Chr 6",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb6, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb6 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb6, "AL42D" = profileAL42D.CHH.Fvb6, "FK42D" = profileFK42D.CHH.Fvb6, "FL42D" = profileFL42D.CHH.Fvb6, "NK42D" = profileNK42D.CHH.Fvb6, "NL42D" = profileNL42D.CHH.Fvb6)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb6=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb6,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on Chr 6",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb7, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb7 <- GRanges(seqnames = Rle("Fvb7"), ranges = IRanges(1,24229589))
+
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+profilesA42D_F42D_N42D_CG.Fvb7 <- GRangesList("AK42D" = profileAK42D.CG.Fvb7, "AL42D" = profileAL42D.CG.Fvb7, "FK42D" = profileFK42D.CG.Fvb7, "FL42D" = profileFL42D.CG.Fvb7, "NK42D" = profileNK42D.CG.Fvb7, "NL42D" = profileNL42D.CG.Fvb7)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb7=plotMethylationProfile(profilesA42D_F42D_N42D_CG.Fvb7,autoscale = FALSE,labels = NULL,title="CG-42D methylation on Chr 7",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb7, CHG context using a window of 200k
+
+
+# compute low resolution  for AK42D
+profileAK42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK42D
+profileFK42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+profilesA42D_F42D_N42D_CHG.Fvb7 <- GRangesList("AK42D" = profileAK42D.CHG.Fvb7, "AL42D" = profileAL42D.CHG.Fvb7, "FK42D" = profileFK42D.CHG.Fvb7, "FL42D" = profileFL42D.CHG.Fvb7, "NK42D" = profileNK42D.CHG.Fvb7, "NL42D" = profileNL42D.CHG.Fvb7)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb7=plotMethylationProfile(profilesA42D_F42D_N42D_CHG.Fvb7,autoscale = FALSE,labels = NULL,title="CHG-42D methylation on Chr 7",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb7, CHH context using a window of 200k
+
+# compute low resolution  for AK42D
+profileAK42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK42D
+profileFK42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+profilesA42D_F42D_N42D_CHH.Fvb7 <- GRangesList("AK42D" = profileAK42D.CHH.Fvb7, "AL42D" = profileAL42D.CHH.Fvb7, "FK42D" = profileFK42D.CHH.Fvb7, "FL42D" = profileFL42D.CHH.Fvb7, "NK42D" = profileNK42D.CHH.Fvb7, "NL42D" = profileNL42D.CHH.Fvb7)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb7=plotMethylationProfile(profilesA42D_F42D_N42D_CHH.Fvb7,autoscale = FALSE,labels = NULL,title="CHH-42D methylation on Chr 7",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+```

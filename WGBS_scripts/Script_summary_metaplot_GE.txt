@@ -1,0 +1,246 @@
+####Section A: Analyses in R
+
+
+```{r}
+#Read in the edited gff file (To this file, regions upstream of fiveprime and downstream of threeprime regions have been defined)
+##Original gff file is named FvH4_XgXXXXX_nomenclature.gff3
+
+library(genomation)
+
+#Read in the edited file
+FvH4a2_ALL_GEs_noExons.a2.1 = readGeneric("/data2/Relindis/WGBS/WGBS_R_analysis/FvH4a2_ALL_GEs_noExons_Relindis.txt", chr = 1, start = 2, end = 3, strand = 4, meta.cols = list(type=5,phase=6,ID=7,subtype=8), keep.all.metadata = TRUE, zero.based = FALSE, remove.unusual = FALSE, header = TRUE, skip = 0, sep = "\t")
+
+```
+#############Analyses in R***************
+
+```{r}
+#read in Cx (mapped reads)files
+library(DMRcaller)
+
+NL0H.methylationData <- readBismark("NL0H.CX_report.txt.gz")
+
+```
+
+```{r}
+
+###Annotate NL0H with FvH4a2_ALL_GEs_noExons.a2.1 file
+
+library(splicejam)
+
+```{r}
+#Annotate NL0H with edited gff "FvH4a2_ALL_GEs_noExons_Relindis.txt" files 
+GE_NL0H.methylationData = annotateGRfromGR(NL0H.methylationData,FvH4a2_ALL_GEs_noExons.a2.1,grOL = NULL,numAsStrings = TRUE,stringShrinkFunc = function(...) {     jamba::cPasteUnique(..., doSort = TRUE) },numShrinkFunc = sum,addStringCols = NULL,type = c("any", "start", "end", "within", "equal"), ignore.strand = FALSE,select = "all", sep = ",",verbose = FALSE,DEBUG = FALSE,)
+
+```
+####Prepare annotated files for analyses in Methpipe
+
+```{r setup}
+#Calculate proportion of methylC in NL0H
+NL0H.proportion <- GE_NL0H.methylationData$readsM / GE_NL0H.methylationData$readsN
+
+#Appending methylation proportion to AK0H
+GE_NL0H.methylationData$NL0H.proportion <- NL0H.proportion
+
+#Extract rows with atleast one methylated cytosine
+GE_NL0H.methylationData_readM0 <-subset(GE_NL0H.methylationData, readsM !="0")
+
+```
+#Import the edited "GE_AK0H.methylationData_readM0" file and start subsetting
+
+######Part 1 NL0H CG context
+
+```{r}
+
+#Extracting rows wih CG context
+Annotated_PreDMR_NL0H.CG <- GE_NL0H.methylationData_readM0[grep("CG", GE_NL0H.methylationData_readM0$context), ]
+
+#EXtract rows containing "gene"
+Annotated_PreDMR_NL0H.CG.gene <- Annotated_PreDMR_NL0H.CG[grep("gene", Annotated_PreDMR_NL0H.CG$type), ]
+
+#For rows in the column type,having more than one character string, remove other characters other than gene
+#To remove CDS
+
+Annotated_PreDMR_NL0H.CG.gene$type=gsub("CDS","",Annotated_PreDMR_NL0H.CG.gene$type)
+#To remove mRNA
+Annotated_PreDMR_NL0H.CG.gene$type=gsub("mRNA","",Annotated_PreDMR_NL0H.CG.gene$type)
+
+#To remove TSS-1000
+Annotated_PreDMR_NL0H.CG.gene$type=gsub("TSS-1000","",Annotated_PreDMR_NL0H.CG.gene$type)
+#To remove TES+1000
+Annotated_PreDMR_NL0H.CG.gene$type=gsub("TES","",Annotated_PreDMR_NL0H.CG.gene$type)
+#To remove 5UTR
+Annotated_PreDMR_NL0H.CG.gene$type=gsub("five_prime_UTR","",Annotated_PreDMR_NL0H.CG.gene$type)
+#To remove 3UTR
+Annotated_PreDMR_NL0H.CG.gene$type=gsub("three_prime_UTR","",Annotated_PreDMR_NL0H.CG.gene$type)
+#To remove , signes
+Annotated_PreDMR_NL0H.CG.gene$type=gsub(",","",Annotated_PreDMR_NL0H.CG.gene$type)
+#Extract rows with CG context and gene
+
+
+#Deleting specific columns
+
+library(dplyr)
+
+Annotated_PreDMR_NL0H.CG.gene <- select(Annotated_PreDMR_NL0H.CG.gene, -c(X, end, width, readsM, trinucleotide_context, source, type, score, phase, ID))
+
+
+#Reorder columns
+
+Annotated_PreDMR_NL0H.CG.gene <- Annotated_PreDMR_NL0H.CG.gene[c("seqnames", "start", "strand","context", "NL0H.proportion", "readsN")]
+
+#Export edited Annotated files as Methcount...."files as table and remove  rows and quotes 
+write.table(Annotated_PreDMR_NL0H.CG.gene, "Methcount_NL0H.CG.gene.txt", quote = FALSE, row.names = FALSE, col.names = FALSE, sep = "\t")
+
+###################Section B: Prepare files for Analyses in Methpipe****************
+# Covert gff to bed
+
+FvH4a2_ALL_genes.gff3 > FvH4a2_ALL_genes.bed
+
+##Split bed file into two separate files based on strand information, with strands appended to the gene ID
+
+##Remove all columns but these 4: Fvb_no. Start Stop +/-GE=FvH4. See details in ..._minus.bed and ...._plus.bed files
+
+##Split each gene locus into 20bins
+
+bedtools makewindows -b FvH4a2_ALL_genes_minus.bed -n 20 -i srcwinnum  > FvH4a2_ALL_genes_minus_20bins.bed
+
+bedtools makewindows -b FvH4a2_ALL_genes_plus.bed -n 20 -i srcwinnum  > FvH4a2_ALL_genes_plus_20bins.bed
+
+##Append strand information to gene ID
+
+###Combine _plus.bed and _minus.bed files to have the file "FvH4a2_ALL_genes_combined_20bins.bed"
+
+
+
+##Then use roimethstat from methpipe
+
+#  input files:
+#  Methcount_NL0H.CG.gene.txt
+#  FvH4a2_ALL_genes_combined_20bins.bed
+
+###Sort Methcount files
+
+LC_AKL=C sort -k 1,1 -k 2,2n -k 3,3n -k 6,6 -o Methcount_NL0H.CG.gene.sorted Methcount_NL0H.CG.gene.txt
+
+###Sort Annotation file
+LC_AKL=C sort -k 1,1 -k 2,2n -k 3,3n -k 6,6 -o FvH4a2_ALL_genes_combined_20bins_sorted.bed FvH4a2_ALL_genes_combined_20bins.bed
+
+####Run roimethstat command to generate regions... files
+
+roimethstat -L -P -o regions_NL0H.CG.gene.bed FvH4a2_ALL_genes_combined_20bins_sorted.bed Methcount_NL0H.CG.gene.sorted
+
+
+######Section C: Import and edit "regions.....bed" files in R to generate "filtererd_regions......txt" files*******
+
+``{r}
+library(rtracklayer)
+
+regions_NL0H.CG.gene <- import.bed("regions_NL0H.CG.gene.bed")
+
+#filtered rows with -nan
+filtered_regions_NL0H.CG.gene <-subset(regions_NL0H.CG.gene, score !="NaN")
+
+#replace _ with space_
+filtered_regions_NL0H.CG.gene$name=gsub("_"," _",filtered_regions_NL0H.CG.gene$name)
+
+#edit bin numbers from _1:...._9: to _01:..._09:
+
+filtered_regions_NL0H.CG.gene$name=gsub("_1:","_01:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_2:","_02:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_3:","_03:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_4:","_04:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_5:","_05:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_6:","_06:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_7:","_07:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_8:","_08:",filtered_regions_NL0H.CG.gene$name)
+filtered_regions_NL0H.CG.gene$name=gsub("_9:","_09:",filtered_regions_NL0H.CG.gene$name)
+
+#splitthe column "name" by "_"
+filtered_regions_NL0H.CG.gene_split  <- str_split_fixed(filtered_regions_NL0H.CG.gene$name," ",3)
+
+#Append split columns to the main file
+
+filtered_regions_NL0H.CG.gene$filtered_regions_NL0H.CG.gene_split <- filtered_regions_NL0H.CG.gene_split
+
+write.table(filtered_regions_NL0H.CG.gene,"filtered_regions_NL0H.CG.gene.txt", sep = "\t", quote = FALSE, row.names = FALSE)
+
+
+#####n In R: Generate "Methylation_per_bin...." files using commands below
+
+
+```{r}
+
+library(readxl)
+library(ggplot2)
+library(openxlsx)
+
+
+filtered_regions_NL0H.CG.gene <- read.table("~/Metaplot_data/filtered_regions_NL0H.CG.gene.txt", header = TRUE)
+
+#Pull out all bins individually
+bin01_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_01",filtered_regions_NL0H.CG.gene$MID),]
+bin02_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_02",filtered_regions_NL0H.CG.gene$MID),]
+bin03_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_03",filtered_regions_NL0H.CG.gene$MID),]
+bin04_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_04",filtered_regions_NL0H.CG.gene$MID),]
+bin05_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_05",filtered_regions_NL0H.CG.gene$MID),]
+bin06_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_06",filtered_regions_NL0H.CG.gene$MID),]
+bin07_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_07",filtered_regions_NL0H.CG.gene$MID),]
+bin08_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_08",filtered_regions_NL0H.CG.gene$MID),]
+bin09_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_09",filtered_regions_NL0H.CG.gene$MID),]
+bin10_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_10",filtered_regions_NL0H.CG.gene$MID),]
+bin11_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_11",filtered_regions_NL0H.CG.gene$MID),]
+bin12_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_12",filtered_regions_NL0H.CG.gene$MID),]
+bin13_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_13",filtered_regions_NL0H.CG.gene$MID),]
+bin14_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_14",filtered_regions_NL0H.CG.gene$MID),]
+bin15_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_15",filtered_regions_NL0H.CG.gene$MID),]
+bin16_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_16",filtered_regions_NL0H.CG.gene$MID),]
+bin17_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_17",filtered_regions_NL0H.CG.gene$MID),]
+bin18_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_18",filtered_regions_NL0H.CG.gene$MID),]
+bin19_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_19",filtered_regions_NL0H.CG.gene$MID),]
+bin20_filtered_regions_NL0H.CG.gene <-  filtered_regions_NL0H.CG.gene[grepl("_20",filtered_regions_NL0H.CG.gene$MID),]
+
+#Take the mean for each bin
+Mean_bin01_filtered_regions_NL0H.CG.gene <- mean(bin01_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin02_filtered_regions_NL0H.CG.gene <- mean(bin02_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin03_filtered_regions_NL0H.CG.gene <- mean(bin03_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin04_filtered_regions_NL0H.CG.gene <- mean(bin04_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin05_filtered_regions_NL0H.CG.gene <- mean(bin05_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin06_filtered_regions_NL0H.CG.gene <- mean(bin06_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin07_filtered_regions_NL0H.CG.gene <- mean(bin07_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin08_filtered_regions_NL0H.CG.gene <- mean(bin08_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin09_filtered_regions_NL0H.CG.gene <- mean(bin09_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin10_filtered_regions_NL0H.CG.gene <- mean(bin10_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin11_filtered_regions_NL0H.CG.gene <- mean(bin11_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin12_filtered_regions_NL0H.CG.gene <- mean(bin12_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin13_filtered_regions_NL0H.CG.gene <- mean(bin13_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin14_filtered_regions_NL0H.CG.gene <- mean(bin14_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin15_filtered_regions_NL0H.CG.gene <- mean(bin15_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin16_filtered_regions_NL0H.CG.gene <- mean(bin16_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin17_filtered_regions_NL0H.CG.gene <- mean(bin17_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin18_filtered_regions_NL0H.CG.gene <- mean(bin18_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin19_filtered_regions_NL0H.CG.gene <- mean(bin19_filtered_regions_NL0H.CG.gene$`Methylation`)
+Mean_bin20_filtered_regions_NL0H.CG.gene <- mean(bin20_filtered_regions_NL0H.CG.gene$`Methylation`)
+
+Methylation_per_bin_NL0H.CG.gene <- data.frame(bin=c("bin01_filtered_regions_NL0H.CG.gene", "Bin02_filtered_regions_NL0H.CG.gene", "Bin03_filtered_regions_NL0H.CG.gene", "Bin04_filtered_regions_NL0H.CG.gene", "Bin05_filtered_regions_NL0H.CG.gene", "Bin06_filtered_regions_NL0H.CG.gene", "Bin07_filtered_regions_NL0H.CG.gene", "Bin08_filtered_regions_NL0H.CG.gene", "Bin09_filtered_regions_NL0H.CG.gene", "Bin10_filtered_regions_NL0H.CG.gene", "Bin11_filtered_regions_NL0H.CG.gene", "Bin12_filtered_regions_NL0H.CG.gene", "Bin13_filtered_regions_NL0H.CG.gene", "Bin14_filtered_regions_NL0H.CG.gene", "Bin15_filtered_regions_NL0H.CG.gene", "Bin16_filtered_regions_NL0H.CG.gene", "Bin17_filtered_regions_NL0H.CG.gene", "Bin18_filtered_regions_NL0H.CG.gene", "Bin19_filtered_regions_NL0H.CG.gene", "Bin20_filtered_regions_NL0H.CG.gene"),
+                 Methylation=c(Mean_bin01_filtered_regions_NL0H.CG.gene, Mean_bin02_filtered_regions_NL0H.CG.gene, Mean_bin03_filtered_regions_NL0H.CG.gene, Mean_bin04_filtered_regions_NL0H.CG.gene, Mean_bin05_filtered_regions_NL0H.CG.gene, Mean_bin06_filtered_regions_NL0H.CG.gene, Mean_bin07_filtered_regions_NL0H.CG.gene, Mean_bin08_filtered_regions_NL0H.CG.gene, Mean_bin09_filtered_regions_NL0H.CG.gene, Mean_bin10_filtered_regions_NL0H.CG.gene, Mean_bin11_filtered_regions_NL0H.CG.gene, Mean_bin12_filtered_regions_NL0H.CG.gene, Mean_bin13_filtered_regions_NL0H.CG.gene, Mean_bin14_filtered_regions_NL0H.CG.gene, Mean_bin15_filtered_regions_NL0H.CG.gene, Mean_bin16_filtered_regions_NL0H.CG.gene, Mean_bin17_filtered_regions_NL0H.CG.gene, Mean_bin18_filtered_regions_NL0H.CG.gene, Mean_bin19_filtered_regions_NL0H.CG.gene, Mean_bin20_filtered_regions_NL0H.CG.gene))
+Methylation_per_bin_NL0H.CG.gene$bin <- factor(Methylation_per_bin_NL0H.CG.gene$bin,levels=c("bin01_filtered_regions_NL0H.CG.gene", "Bin02_filtered_regions_NL0H.CG.gene", "Bin03_filtered_regions_NL0H.CG.gene", "Bin04_filtered_regions_NL0H.CG.gene", "Bin05_filtered_regions_NL0H.CG.gene", "Bin06_filtered_regions_NL0H.CG.gene", "Bin07_filtered_regions_NL0H.CG.gene", "Bin08_filtered_regions_NL0H.CG.gene", "Bin09_filtered_regions_NL0H.CG.gene", "Bin10_filtered_regions_NL0H.CG.gene", "Bin11_filtered_regions_NL0H.CG.gene", "Bin12_filtered_regions_NL0H.CG.gene", "Bin13_filtered_regions_NL0H.CG.gene", "Bin14_filtered_regions_NL0H.CG.gene", "Bin15_filtered_regions_NL0H.CG.gene", "Bin16_filtered_regions_NL0H.CG.gene", "Bin17_filtered_regions_NL0H.CG.gene", "Bin18_filtered_regions_NL0H.CG.gene", "Bin19_filtered_regions_NL0H.CG.gene", "Bin20_filtered_regions_NL0H.CG.gene"))
+write.xlsx(Methylation_per_bin_NL0H.CG.gene, "Methylation_per_bin_NL0H.CG.gene.xlsx")
+
+##Merge “Methylation_per_bin” into contexts to generate the file “Metaplot_data_NCGR1363_CG” (for CG context). Use the resultant file to generate metaplots. 
+
+##Generate plots using the following commands
+
+```{r}
+
+# Generate plots
+Metaplot_data_NCGR1363_CG <- read.xlsx("Metaplot_data_NCGR1363_CG.xlsx")
+
+Metaplot_data_NCGR1363_CG$Region <- factor(Metaplot_data_NCGR1363_CG$Region)
+Metaplot_data_NCGR1363_CG$Region <- factor(Metaplot_data_NCGR1363_CG$Region,levels = unique(Metaplot_data_NCGR1363_CG$Region))
+
+library(ggplot2)
+
+ggplot(Metaplot_data_NCGR1363_CG, aes(x=Bin, y=Methylation, colour= Group, group=Group))+geom_line() +theme(panel.background = element_blank(), panel.border = element_rect(color = "grey", fill = NA, size = 0.05),panel.grid.major = element_line(colour = "white",linetype="dashed"))+ labs(title = "CG") + theme(plot.title = element_text(hjust=0.5))+ scale_color_manual(values = c("red", "blue", "green", "black","brown","gold"))+ geom_vline(xintercept=c(20,40), linetype="dotted") + theme(axis.text.x = element_blank(),axis.ticks.x = element_blank())+labs(x="-1kb                                 Gene body                                        1kb")+ylab('DNA methylation levels')+ylim(0, 1)
+
+
+```

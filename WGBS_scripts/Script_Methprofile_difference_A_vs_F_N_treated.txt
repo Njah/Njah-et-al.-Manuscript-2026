@@ -1,0 +1,2158 @@
+---
+title: "Untitled"
+author: "Relindis"
+date: "2024-06-03"
+output: html_document
+---
+
+```{r}
+library("DMRcaller")
+
+AK42D.methylationData <- readBismark("AK42D.CX_report.txt.gz")
+
+FK42D.methylationData <- readBismark("FK42D.CX_report.txt.gz")
+
+NK42D.methylationData <- readBismark("NK42D.CX_report.txt.gz")
+
+AL42D.methylationData <- readBismark("AL42D.CX_report.txt.gz")
+
+FL42D.methylationData <- readBismark("FL42D.CX_report.txt.gz")
+
+NL42D.methylationData <- readBismark("NL42D.CX_report.txt.gz")
+
+#Store data from all files in a GRanges object
+
+methylationDataList_A_F_N <- GRangesList("AK42D" = AK42D.methylationData, "AL42D" = AL42D.methylationData,"FK42D" = FK42D.methylationData,"FL42D" = FL42D.methylationData,"NK42D" = NK42D.methylationData, "NL42D" = NL42D.methylationData)
+
+
+#####  Chromosome 1
+
+#Compute methylation profile for Fvb1
+
+regions_A_F_N.Fvb1 <- GRanges(seqnames = Rle("Fvb1"), ranges = IRanges(1,24253023))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb1   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb1 CG context
+PropdiffAKFK42D.CG.Fvb1 <- profileAK42D.CG.Fvb1$Proportion - profileFK42D.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb1 <- profileAK42D.CG.Fvb1
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb1$PropdiffAKFK42D.CG.Fvb1 <- PropdiffAKFK42D.CG.Fvb1
+
+write.csv(profileAKFK42D.CG.Fvb1, "profileAKFK42D.CG.Fvb1.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb1 CG context
+PropdiffAKNK42D.CG.Fvb1 <- profileAK42D.CG.Fvb1$Proportion - profileNK42D.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb1 <- profileAK42D.CG.Fvb1
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb1$PropdiffAKNK42D.CG.Fvb1 <- PropdiffAKNK42D.CG.Fvb1
+
+
+write.csv(profileAKNK42D.CG.Fvb1, "profileAKNK42D.CG.Fvb1.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb1 CG context
+PropdiffALFL42D.CG.Fvb1 <- profileAL42D.CG.Fvb1$Proportion - profileFL42D.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb1 <- profileAL42D.CG.Fvb1
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb1$PropdiffALFL42D.CG.Fvb1 <- PropdiffALFL42D.CG.Fvb1
+
+write.csv(profileALFL42D.CG.Fvb1, "profileALFL42D.CG.Fvb1.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb1 CG context
+PropdiffALNL42D.CG.Fvb1 <- profileAL42D.CG.Fvb1$Proportion - profileNL42D.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb1 <- profileAL42D.CG.Fvb1
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb1$PropdiffALNL42D.CG.Fvb1 <- PropdiffALNL42D.CG.Fvb1
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb1, "profileALNL42D.CG.Fvb1.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb1 <- read.csv("profileAKFKNK42D.CG.Fvb1.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb1 <- ggplot(Final_profileAKFKNK42D.CG.Fvb1, aes(x=end, y=Propdiff.CG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D  chr1") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb1.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb1, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb1 <- read.csv("profileALFLNL42D.CG.Fvb1.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb1 <- ggplot(Final_profileALFLNL42D.CG.Fvb1, aes(x=end, y=Propdiff.CG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D  chr1") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb1.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb1, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG chr1 42D ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb1   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb1 CHG context
+PropdiffAKFK42D.CHG.Fvb1 <- profileAK42D.CHG.Fvb1$Proportion - profileFK42D.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb1 <- profileAK42D.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb1$PropdiffAKFK42D.CHG.Fvb1 <- PropdiffAKFK42D.CHG.Fvb1
+
+write.csv(profileAKFK42D.CHG.Fvb1, "profileAKFK42D.CHG.Fvb1.csv")
+
+#Proportion difference in meth profile between AK42D and NCHGR1363 in Fvb1 CHG context
+PropdiffAKNK42D.CHG.Fvb1 <- profileAK42D.CHG.Fvb1$Proportion - profileNK42D.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb1 <- profileAK42D.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb1$PropdiffAKNK42D.CHG.Fvb1 <- PropdiffAKNK42D.CHG.Fvb1
+
+
+write.csv(profileAKNK42D.CHG.Fvb1, "profileAKNK42D.CHG.Fvb1.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb1 CHG context
+PropdiffALFL42D.CHG.Fvb1 <- profileAL42D.CHG.Fvb1$Proportion - profileFL42D.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb1 <- profileAL42D.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb1$PropdiffALFL42D.CHG.Fvb1 <- PropdiffALFL42D.CHG.Fvb1
+
+write.csv(profileALFL42D.CHG.Fvb1, "profileALFL42D.CHG.Fvb1.csv")
+
+#Proportion difference in meth profile between AL42D and NCHGR1363 in Fvb1 CHG context
+PropdiffALNL42D.CHG.Fvb1 <- profileAL42D.CHG.Fvb1$Proportion - profileNL42D.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb1 <- profileAL42D.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb1$PropdiffALNL42D.CHG.Fvb1 <- PropdiffALNL42D.CHG.Fvb1
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb1, "profileALNL42D.CHG.Fvb1.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb1 <- read.csv("profileAKFKNK42D.CHG.Fvb1.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb1 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb1, aes(x=end, y=Propdiff.CHG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D  chr1") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb1.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb1, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb1 <- read.csv("profileALFLNL42D.CHG.Fvb1.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb1 <- ggplot(Final_profileALFLNL42D.CHG.Fvb1, aes(x=end, y=Propdiff.CHG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D  chr1") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb1.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb1, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+
+#####   3. CHH Fvb1   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb1 CHH context
+PropdiffAKFK42D.CHH.Fvb1 <- profileAK42D.CHH.Fvb1$Proportion - profileFK42D.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb1 <- profileAK42D.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb1$PropdiffAKFK42D.CHH.Fvb1 <- PropdiffAKFK42D.CHH.Fvb1
+
+write.csv(profileAKFK42D.CHH.Fvb1, "profileAKFK42D.CHH.Fvb1.csv")
+
+#Proportion difference in meth profile between AK42D and NCHHR1363 in Fvb1 CHH context
+PropdiffAKNK42D.CHH.Fvb1 <- profileAK42D.CHH.Fvb1$Proportion - profileNK42D.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb1 <- profileAK42D.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb1$PropdiffAKNK42D.CHH.Fvb1 <- PropdiffAKNK42D.CHH.Fvb1
+
+
+write.csv(profileAKNK42D.CHH.Fvb1, "profileAKNK42D.CHH.Fvb1.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb1 CHH context
+PropdiffALFL42D.CHH.Fvb1 <- profileAL42D.CHH.Fvb1$Proportion - profileFL42D.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb1 <- profileAL42D.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb1$PropdiffALFL42D.CHH.Fvb1 <- PropdiffALFL42D.CHH.Fvb1
+
+write.csv(profileALFL42D.CHH.Fvb1, "profileALFL42D.CHH.Fvb1.csv")
+
+#Proportion difference in meth profile between AL42D and NCHHR1363 in Fvb1 CHH context
+PropdiffALNL42D.CHH.Fvb1 <- profileAL42D.CHH.Fvb1$Proportion - profileNL42D.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb1 <- profileAL42D.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb1$PropdiffALNL42D.CHH.Fvb1 <- PropdiffALNL42D.CHH.Fvb1
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb1, "profileALNL42D.CHH.Fvb1.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb1 <- read.csv("profileAKFKNK42D.CHH.Fvb1.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb1 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb1, aes(x=end, y=Propdiff.CHH.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D  chr1") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb1.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb1, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb1 <- read.csv("profileALFLNL42D.CHH.Fvb1.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb1 <- ggplot(Final_profileALFLNL42D.CHH.Fvb1, aes(x=end, y=Propdiff.CHH.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D  chr1") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb1.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb1, device = "pdf", path="./", dpi=300)
+
+```
+##############B. Chromosome 2
+
+
+```{r}
+#Compute methylation profile for Fvb2
+
+regions_A_F_N.Fvb2 <- GRanges(seqnames = Rle("Fvb2"), ranges = IRanges(1,29351230))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb2   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb2 CG context
+PropdiffAKFK42D.CG.Fvb2 <- profileAK42D.CG.Fvb2$Proportion - profileFK42D.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb2 <- profileAK42D.CG.Fvb2
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb2$PropdiffAKFK42D.CG.Fvb2 <- PropdiffAKFK42D.CG.Fvb2
+
+write.csv(profileAKFK42D.CG.Fvb2, "profileAKFK42D.CG.Fvb2.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb2 CG context
+PropdiffAKNK42D.CG.Fvb2 <- profileAK42D.CG.Fvb2$Proportion - profileNK42D.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb2 <- profileAK42D.CG.Fvb2
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb2$PropdiffAKNK42D.CG.Fvb2 <- PropdiffAKNK42D.CG.Fvb2
+
+
+write.csv(profileAKNK42D.CG.Fvb2, "profileAKNK42D.CG.Fvb2.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb2 CG context
+PropdiffALFL42D.CG.Fvb2 <- profileAL42D.CG.Fvb2$Proportion - profileFL42D.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb2 <- profileAL42D.CG.Fvb2
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb2$PropdiffALFL42D.CG.Fvb2 <- PropdiffALFL42D.CG.Fvb2
+
+write.csv(profileALFL42D.CG.Fvb2, "profileALFL42D.CG.Fvb2.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb2 CG context
+PropdiffALNL42D.CG.Fvb2 <- profileAL42D.CG.Fvb2$Proportion - profileNL42D.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb2 <- profileAL42D.CG.Fvb2
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb2$PropdiffALNL42D.CG.Fvb2 <- PropdiffALNL42D.CG.Fvb2
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb2, "profileALNL42D.CG.Fvb2.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb2 <- read.csv("profileAKFKNK42D.CG.Fvb2.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb2 <- ggplot(Final_profileAKFKNK42D.CG.Fvb2, aes(x=end, y=Propdiff.CG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D chr2") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb2.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb2, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb2 <- read.csv("profileALFLNL42D.CG.Fvb2.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb2 <- ggplot(Final_profileALFLNL42D.CG.Fvb2, aes(x=end, y=Propdiff.CG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D chr2") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb2.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb2, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG Chr2 42D ####
+
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb2   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb2 CHG context
+PropdiffAKFK42D.CHG.Fvb2 <- profileAK42D.CHG.Fvb2$Proportion - profileFK42D.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb2 <- profileAK42D.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb2$PropdiffAKFK42D.CHG.Fvb2 <- PropdiffAKFK42D.CHG.Fvb2
+
+write.csv(profileAKFK42D.CHG.Fvb2, "profileAKFK42D.CHG.Fvb2.csv")
+
+#Proportion difference in meth profile between AK42D and NCHGR1363 in Fvb2 CHG context
+PropdiffAKNK42D.CHG.Fvb2 <- profileAK42D.CHG.Fvb2$Proportion - profileNK42D.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb2 <- profileAK42D.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb2$PropdiffAKNK42D.CHG.Fvb2 <- PropdiffAKNK42D.CHG.Fvb2
+
+
+write.csv(profileAKNK42D.CHG.Fvb2, "profileAKNK42D.CHG.Fvb2.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb2 CHG context
+PropdiffALFL42D.CHG.Fvb2 <- profileAL42D.CHG.Fvb2$Proportion - profileFL42D.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb2 <- profileAL42D.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb2$PropdiffALFL42D.CHG.Fvb2 <- PropdiffALFL42D.CHG.Fvb2
+
+write.csv(profileALFL42D.CHG.Fvb2, "profileALFL42D.CHG.Fvb2.csv")
+
+#Proportion difference in meth profile between AL42D and NCHGR1363 in Fvb2 CHG context
+PropdiffALNL42D.CHG.Fvb2 <- profileAL42D.CHG.Fvb2$Proportion - profileNL42D.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb2 <- profileAL42D.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb2$PropdiffALNL42D.CHG.Fvb2 <- PropdiffALNL42D.CHG.Fvb2
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb2, "profileALNL42D.CHG.Fvb2.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb2 <- read.csv("profileAKFKNK42D.CHG.Fvb2.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb2 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb2, aes(x=end, y=Propdiff.CHG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D chr2") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb2.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb2, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb2 <- read.csv("profileALFLNL42D.CHG.Fvb2.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb2 <- ggplot(Final_profileALFLNL42D.CHG.Fvb2, aes(x=end, y=Propdiff.CHG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D chr2") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb2.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb2, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+
+#####   3. CHH Fvb2   #############
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb2 CHH context
+PropdiffAKFK42D.CHH.Fvb2 <- profileAK42D.CHH.Fvb2$Proportion - profileFK42D.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb2 <- profileAK42D.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb2$PropdiffAKFK42D.CHH.Fvb2 <- PropdiffAKFK42D.CHH.Fvb2
+
+write.csv(profileAKFK42D.CHH.Fvb2, "profileAKFK42D.CHH.Fvb2.csv")
+
+#Proportion difference in meth profile between AK42D and NCHHR1363 in Fvb2 CHH context
+PropdiffAKNK42D.CHH.Fvb2 <- profileAK42D.CHH.Fvb2$Proportion - profileNK42D.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb2 <- profileAK42D.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb2$PropdiffAKNK42D.CHH.Fvb2 <- PropdiffAKNK42D.CHH.Fvb2
+
+
+write.csv(profileAKNK42D.CHH.Fvb2, "profileAKNK42D.CHH.Fvb2.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb2 CHH context
+PropdiffALFL42D.CHH.Fvb2 <- profileAL42D.CHH.Fvb2$Proportion - profileFL42D.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb2 <- profileAL42D.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb2$PropdiffALFL42D.CHH.Fvb2 <- PropdiffALFL42D.CHH.Fvb2
+
+write.csv(profileALFL42D.CHH.Fvb2, "profileALFL42D.CHH.Fvb2.csv")
+
+#Proportion difference in meth profile between AL42D and NCHHR1363 in Fvb2 CHH context
+PropdiffALNL42D.CHH.Fvb2 <- profileAL42D.CHH.Fvb2$Proportion - profileNL42D.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb2 <- profileAL42D.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb2$PropdiffALNL42D.CHH.Fvb2 <- PropdiffALNL42D.CHH.Fvb2
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb2, "profileALNL42D.CHH.Fvb2.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb2 <- read.csv("profileAKFKNK42D.CHH.Fvb2.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb2 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb2, aes(x=end, y=Propdiff.CHH.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D chr2") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb2.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb2, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb2 <- read.csv("profileALFLNL42D.CHH.Fvb2.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb2 <- ggplot(Final_profileALFLNL42D.CHH.Fvb2, aes(x=end, y=Propdiff.CHH.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D chr2") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb2.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb2, device = "pdf", path="./", dpi=300)
+
+```
+
+
+```{r}
+############## C. Chromosome 3
+#Compute methylation profile for Fvb3
+
+regions_A_F_N.Fvb3 <- GRanges(seqnames = Rle("Fvb3"), ranges = IRanges(1,38324302))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb3 CG context
+PropdiffAKFK42D.CG.Fvb3 <- profileAK42D.CG.Fvb3$Proportion - profileFK42D.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb3 <- profileAK42D.CG.Fvb3
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb3$PropdiffAKFK42D.CG.Fvb3 <- PropdiffAKFK42D.CG.Fvb3
+
+write.csv(profileAKFK42D.CG.Fvb3, "profileAKFK42D.CG.Fvb3.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb3 CG context
+PropdiffAKNK42D.CG.Fvb3 <- profileAK42D.CG.Fvb3$Proportion - profileNK42D.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb3 <- profileAK42D.CG.Fvb3
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb3$PropdiffAKNK42D.CG.Fvb3 <- PropdiffAKNK42D.CG.Fvb3
+
+
+write.csv(profileAKNK42D.CG.Fvb3, "profileAKNK42D.CG.Fvb3.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb3 CG context
+PropdiffALFL42D.CG.Fvb3 <- profileAL42D.CG.Fvb3$Proportion - profileFL42D.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb3 <- profileAL42D.CG.Fvb3
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb3$PropdiffALFL42D.CG.Fvb3 <- PropdiffALFL42D.CG.Fvb3
+
+write.csv(profileALFL42D.CG.Fvb3, "profileALFL42D.CG.Fvb3.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb3 CG context
+PropdiffALNL42D.CG.Fvb3 <- profileAL42D.CG.Fvb3$Proportion - profileNL42D.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb3 <- profileAL42D.CG.Fvb3
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb3$PropdiffALNL42D.CG.Fvb3 <- PropdiffALNL42D.CG.Fvb3
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb3, "profileALNL42D.CG.Fvb3.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb3 <- read.csv("profileAKFKNK42D.CG.Fvb3.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb3 <- ggplot(Final_profileAKFKNK42D.CG.Fvb3, aes(x=end, y=Propdiff.CG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D chr3") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb3.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb3, device = "pdf", path="./", dpi=300)
+
+
+####Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb3 <- read.csv("profileALFLNL42D.CG.Fvb3.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb3 <- ggplot(Final_profileALFLNL42D.CG.Fvb3, aes(x=end, y=Propdiff.CG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D chr3") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb3.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb3, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG Chr3 42D ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb3   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb3 CHG context
+PropdiffAKFK42D.CHG.Fvb3 <- profileAK42D.CHG.Fvb3$Proportion - profileFK42D.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb3 <- profileAK42D.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb3$PropdiffAKFK42D.CHG.Fvb3 <- PropdiffAKFK42D.CHG.Fvb3
+
+write.csv(profileAKFK42D.CHG.Fvb3, "profileAKFK42D.CHG.Fvb3.csv")
+
+#Proportion difference in meth profile between AK42D and NCHGR1363 in Fvb3 CHG context
+PropdiffAKNK42D.CHG.Fvb3 <- profileAK42D.CHG.Fvb3$Proportion - profileNK42D.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb3 <- profileAK42D.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb3$PropdiffAKNK42D.CHG.Fvb3 <- PropdiffAKNK42D.CHG.Fvb3
+
+
+write.csv(profileAKNK42D.CHG.Fvb3, "profileAKNK42D.CHG.Fvb3.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb3 CHG context
+PropdiffALFL42D.CHG.Fvb3 <- profileAL42D.CHG.Fvb3$Proportion - profileFL42D.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb3 <- profileAL42D.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb3$PropdiffALFL42D.CHG.Fvb3 <- PropdiffALFL42D.CHG.Fvb3
+
+write.csv(profileALFL42D.CHG.Fvb3, "profileALFL42D.CHG.Fvb3.csv")
+
+#Proportion difference in meth profile between AL42D and NCHGR1363 in Fvb3 CHG context
+PropdiffALNL42D.CHG.Fvb3 <- profileAL42D.CHG.Fvb3$Proportion - profileNL42D.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb3 <- profileAL42D.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb3$PropdiffALNL42D.CHG.Fvb3 <- PropdiffALNL42D.CHG.Fvb3
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb3, "profileALNL42D.CHG.Fvb3.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb3 <- read.csv("profileAKFKNK42D.CHG.Fvb3.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb3 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb3, aes(x=end, y=Propdiff.CHG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D chr3") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb3.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb3, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb3 <- read.csv("profileALFLNL42D.CHG.Fvb3.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb3 <- ggplot(Final_profileALFLNL42D.CHG.Fvb3, aes(x=end, y=Propdiff.CHG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D chr3") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb3.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb3, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+
+#####   3. CHH Fvb3   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb3 CHH context
+PropdiffAKFK42D.CHH.Fvb3 <- profileAK42D.CHH.Fvb3$Proportion - profileFK42D.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb3 <- profileAK42D.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb3$PropdiffAKFK42D.CHH.Fvb3 <- PropdiffAKFK42D.CHH.Fvb3
+
+write.csv(profileAKFK42D.CHH.Fvb3, "profileAKFK42D.CHH.Fvb3.csv")
+
+#Proportion difference in meth profile between AK42D and NCHHR1363 in Fvb3 CHH context
+PropdiffAKNK42D.CHH.Fvb3 <- profileAK42D.CHH.Fvb3$Proportion - profileNK42D.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb3 <- profileAK42D.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb3$PropdiffAKNK42D.CHH.Fvb3 <- PropdiffAKNK42D.CHH.Fvb3
+
+
+write.csv(profileAKNK42D.CHH.Fvb3, "profileAKNK42D.CHH.Fvb3.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb3 CHH context
+PropdiffALFL42D.CHH.Fvb3 <- profileAL42D.CHH.Fvb3$Proportion - profileFL42D.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb3 <- profileAL42D.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb3$PropdiffALFL42D.CHH.Fvb3 <- PropdiffALFL42D.CHH.Fvb3
+
+write.csv(profileALFL42D.CHH.Fvb3, "profileALFL42D.CHH.Fvb3.csv")
+
+#Proportion difference in meth profile between AL42D and NCHHR1363 in Fvb3 CHH context
+PropdiffALNL42D.CHH.Fvb3 <- profileAL42D.CHH.Fvb3$Proportion - profileNL42D.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb3 <- profileAL42D.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb3$PropdiffALNL42D.CHH.Fvb3 <- PropdiffALNL42D.CHH.Fvb3
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb3, "profileALNL42D.CHH.Fvb3.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb3 <- read.csv("profileAKFKNK42D.CHH.Fvb3.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb3 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb3, aes(x=end, y=Propdiff.CHH.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D chr3") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb3.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb3, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb3 <- read.csv("profileALFLNL42D.CHH.Fvb3.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb3 <- ggplot(Final_profileALFLNL42D.CHH.Fvb3, aes(x=end, y=Propdiff.CHH.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D chr3") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb3.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb3, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+##############C. Chromosome 4
+#Compute methylation profile for Fvb4
+
+regions_A_F_N.Fvb4 <- GRanges(seqnames = Rle("Fvb4"), ranges = IRanges(1,33907851))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb4   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb4 CG context
+PropdiffAKFK42D.CG.Fvb4 <- profileAK42D.CG.Fvb4$Proportion - profileFK42D.CG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb4 <- profileAK42D.CG.Fvb4
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb4$PropdiffAKFK42D.CG.Fvb4 <- PropdiffAKFK42D.CG.Fvb4
+
+write.csv(profileAKFK42D.CG.Fvb4, "profileAKFK42D.CG.Fvb4.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb4 CG context
+PropdiffAKNK42D.CG.Fvb4 <- profileAK42D.CG.Fvb4$Proportion - profileNK42D.CG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb4 <- profileAK42D.CG.Fvb4
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb4$PropdiffAKNK42D.CG.Fvb4 <- PropdiffAKNK42D.CG.Fvb4
+
+
+write.csv(profileAKNK42D.CG.Fvb4, "profileAKNK42D.CG.Fvb4.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb4 CG context
+PropdiffALFL42D.CG.Fvb4 <- profileAL42D.CG.Fvb4$Proportion - profileFL42D.CG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb4 <- profileAL42D.CG.Fvb4
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb4$PropdiffALFL42D.CG.Fvb4 <- PropdiffALFL42D.CG.Fvb4
+
+write.csv(profileALFL42D.CG.Fvb4, "profileALFL42D.CG.Fvb4.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb4 CG context
+PropdiffALNL42D.CG.Fvb4 <- profileAL42D.CG.Fvb4$Proportion - profileNL42D.CG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb4 <- profileAL42D.CG.Fvb4
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb4$PropdiffALNL42D.CG.Fvb4 <- PropdiffALNL42D.CG.Fvb4
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb4, "profileALNL42D.CG.Fvb4.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb4 <- read.csv("profileAKFKNK42D.CG.Fvb4.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb4 <- ggplot(Final_profileAKFKNK42D.CG.Fvb4, aes(x=end, y=Propdiff.CG.Fvb4)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 35000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D chr4") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb4.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb4, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb4 <- read.csv("profileALFLNL42D.CG.Fvb4.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb4 <- ggplot(Final_profileALFLNL42D.CG.Fvb4, aes(x=end, y=Propdiff.CG.Fvb4)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 35000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D chr4") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb4.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb4, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG Chr4 42D ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb4   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb4 CHG context
+PropdiffAKFK42D.CHG.Fvb4 <- profileAK42D.CHG.Fvb4$Proportion - profileFK42D.CHG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb4 <- profileAK42D.CHG.Fvb4
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb4$PropdiffAKFK42D.CHG.Fvb4 <- PropdiffAKFK42D.CHG.Fvb4
+
+write.csv(profileAKFK42D.CHG.Fvb4, "profileAKFK42D.CHG.Fvb4.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb4 CHG context
+PropdiffAKNK42D.CHG.Fvb4 <- profileAK42D.CHG.Fvb4$Proportion - profileNK42D.CHG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb4 <- profileAK42D.CHG.Fvb4
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb4$PropdiffAKNK42D.CHG.Fvb4 <- PropdiffAKNK42D.CHG.Fvb4
+
+
+write.csv(profileAKNK42D.CHG.Fvb4, "profileAKNK42D.CHG.Fvb4.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb4 CHG context
+PropdiffALFL42D.CHG.Fvb4 <- profileAL42D.CHG.Fvb4$Proportion - profileFL42D.CHG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb4 <- profileAL42D.CHG.Fvb4
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb4$PropdiffALFL42D.CHG.Fvb4 <- PropdiffALFL42D.CHG.Fvb4
+
+write.csv(profileALFL42D.CHG.Fvb4, "profileALFL42D.CHG.Fvb4.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb4 CHG context
+PropdiffALNL42D.CHG.Fvb4 <- profileAL42D.CHG.Fvb4$Proportion - profileNL42D.CHG.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb4 <- profileAL42D.CHG.Fvb4
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb4$PropdiffALNL42D.CHG.Fvb4 <- PropdiffALNL42D.CHG.Fvb4
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb4, "profileALNL42D.CHG.Fvb4.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb4 <- read.csv("profileAKFKNK42D.CHG.Fvb4.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb4 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb4, aes(x=end, y=Propdiff.CHG.Fvb4)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 35000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D chr4") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb4.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb4, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb4 <- read.csv("profileALFLNL42D.CHG.Fvb4.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb4 <- ggplot(Final_profileALFLNL42D.CHG.Fvb4, aes(x=end, y=Propdiff.CHG.Fvb4)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 35000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D chr4") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb4.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb4, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+
+#####   3. CHH Fvb4   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb4 CHH context
+PropdiffAKFK42D.CHH.Fvb4 <- profileAK42D.CHH.Fvb4$Proportion - profileFK42D.CHH.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb4 <- profileAK42D.CHH.Fvb4
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb4$PropdiffAKFK42D.CHH.Fvb4 <- PropdiffAKFK42D.CHH.Fvb4
+
+write.csv(profileAKFK42D.CHH.Fvb4, "profileAKFK42D.CHH.Fvb4.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb4 CHH context
+PropdiffAKNK42D.CHH.Fvb4 <- profileAK42D.CHH.Fvb4$Proportion - profileNK42D.CHH.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb4 <- profileAK42D.CHH.Fvb4
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb4$PropdiffAKNK42D.CHH.Fvb4 <- PropdiffAKNK42D.CHH.Fvb4
+
+
+write.csv(profileAKNK42D.CHH.Fvb4, "profileAKNK42D.CHH.Fvb4.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb4 CHH context
+PropdiffALFL42D.CHH.Fvb4 <- profileAL42D.CHH.Fvb4$Proportion - profileFL42D.CHH.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb4 <- profileAL42D.CHH.Fvb4
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb4$PropdiffALFL42D.CHH.Fvb4 <- PropdiffALFL42D.CHH.Fvb4
+
+write.csv(profileALFL42D.CHH.Fvb4, "profileALFL42D.CHH.Fvb4.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb4 CHH context
+PropdiffALNL42D.CHH.Fvb4 <- profileAL42D.CHH.Fvb4$Proportion - profileNL42D.CHH.Fvb4$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb4 <- profileAL42D.CHH.Fvb4
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb4$PropdiffALNL42D.CHH.Fvb4 <- PropdiffALNL42D.CHH.Fvb4
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb4, "profileALNL42D.CHH.Fvb4.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb4 <- read.csv("profileAKFKNK42D.CHH.Fvb4.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb4 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb4, aes(x=end, y=Propdiff.CHH.Fvb4)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 35000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D chr4") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb4.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb4, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb4 <- read.csv("profileALFLNL42D.CHH.Fvb4.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb4 <- ggplot(Final_profileALFLNL42D.CHH.Fvb4, aes(x=end, y=Propdiff.CHH.Fvb4)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 35000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D chr4") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb4.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb4, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+##############C. Chromosome 5
+#Compute methylation profile for Fvb5
+
+regions_A_F_N.Fvb5 <- GRanges(seqnames = Rle("Fvb5"), ranges = IRanges(1,29430145))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb5   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb5 CG context
+PropdiffAKFK42D.CG.Fvb5 <- profileAK42D.CG.Fvb5$Proportion - profileFK42D.CG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb5 <- profileAK42D.CG.Fvb5
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb5$PropdiffAKFK42D.CG.Fvb5 <- PropdiffAKFK42D.CG.Fvb5
+
+write.csv(profileAKFK42D.CG.Fvb5, "profileAKFK42D.CG.Fvb5.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb5 CG context
+PropdiffAKNK42D.CG.Fvb5 <- profileAK42D.CG.Fvb5$Proportion - profileNK42D.CG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb5 <- profileAK42D.CG.Fvb5
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb5$PropdiffAKNK42D.CG.Fvb5 <- PropdiffAKNK42D.CG.Fvb5
+
+
+write.csv(profileAKNK42D.CG.Fvb5, "profileAKNK42D.CG.Fvb5.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb5 CG context
+PropdiffALFL42D.CG.Fvb5 <- profileAL42D.CG.Fvb5$Proportion - profileFL42D.CG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb5 <- profileAL42D.CG.Fvb5
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb5$PropdiffALFL42D.CG.Fvb5 <- PropdiffALFL42D.CG.Fvb5
+
+write.csv(profileALFL42D.CG.Fvb5, "profileALFL42D.CG.Fvb5.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb5 CG context
+PropdiffALNL42D.CG.Fvb5 <- profileAL42D.CG.Fvb5$Proportion - profileNL42D.CG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb5 <- profileAL42D.CG.Fvb5
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb5$PropdiffALNL42D.CG.Fvb5 <- PropdiffALNL42D.CG.Fvb5
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb5, "profileALNL42D.CG.Fvb5.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb5 <- read.csv("profileAKFKNK42D.CG.Fvb5.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb5 <- ggplot(Final_profileAKFKNK42D.CG.Fvb5, aes(x=end, y=Propdiff.CG.Fvb5)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D chr5") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb5.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb5, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb5 <- read.csv("profileALFLNL42D.CG.Fvb5.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb5 <- ggplot(Final_profileALFLNL42D.CG.Fvb5, aes(x=end, y=Propdiff.CG.Fvb5)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D chr5") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb5.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb5, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG Chr5 42D ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb5 CHG context
+PropdiffAKFK42D.CHG.Fvb5 <- profileAK42D.CHG.Fvb5$Proportion - profileFK42D.CHG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb5 <- profileAK42D.CHG.Fvb5
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb5$PropdiffAKFK42D.CHG.Fvb5 <- PropdiffAKFK42D.CHG.Fvb5
+
+write.csv(profileAKFK42D.CHG.Fvb5, "profileAKFK42D.CHG.Fvb5.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb5 CHG context
+PropdiffAKNK42D.CHG.Fvb5 <- profileAK42D.CHG.Fvb5$Proportion - profileNK42D.CHG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb5 <- profileAK42D.CHG.Fvb5
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb5$PropdiffAKNK42D.CHG.Fvb5 <- PropdiffAKNK42D.CHG.Fvb5
+
+
+write.csv(profileAKNK42D.CHG.Fvb5, "profileAKNK42D.CHG.Fvb5.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb5 CHG context
+PropdiffALFL42D.CHG.Fvb5 <- profileAL42D.CHG.Fvb5$Proportion - profileFL42D.CHG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb5 <- profileAL42D.CHG.Fvb5
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb5$PropdiffALFL42D.CHG.Fvb5 <- PropdiffALFL42D.CHG.Fvb5
+
+write.csv(profileALFL42D.CHG.Fvb5, "profileALFL42D.CHG.Fvb5.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb5 CHG context
+PropdiffALNL42D.CHG.Fvb5 <- profileAL42D.CHG.Fvb5$Proportion - profileNL42D.CHG.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb5 <- profileAL42D.CHG.Fvb5
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb5$PropdiffALNL42D.CHG.Fvb5 <- PropdiffALNL42D.CHG.Fvb5
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb5, "profileALNL42D.CHG.Fvb5.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb5 <- read.csv("profileAKFKNK42D.CHG.Fvb5.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb5 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb5, aes(x=end, y=Propdiff.CHG.Fvb5)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D chr5") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb5.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb5, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb5 <- read.csv("profileALFLNL42D.CHG.Fvb5.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb5 <- ggplot(Final_profileALFLNL42D.CHG.Fvb5, aes(x=end, y=Propdiff.CHG.Fvb5)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D chr5") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb5.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb5, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+
+#####   3. CHH Fvb5   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb5 CHH context
+PropdiffAKFK42D.CHH.Fvb5 <- profileAK42D.CHH.Fvb5$Proportion - profileFK42D.CHH.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb5 <- profileAK42D.CHH.Fvb5
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb5$PropdiffAKFK42D.CHH.Fvb5 <- PropdiffAKFK42D.CHH.Fvb5
+
+write.csv(profileAKFK42D.CHH.Fvb5, "profileAKFK42D.CHH.Fvb5.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb5 CHH context
+PropdiffAKNK42D.CHH.Fvb5 <- profileAK42D.CHH.Fvb5$Proportion - profileNK42D.CHH.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb5 <- profileAK42D.CHH.Fvb5
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb5$PropdiffAKNK42D.CHH.Fvb5 <- PropdiffAKNK42D.CHH.Fvb5
+
+
+write.csv(profileAKNK42D.CHH.Fvb5, "profileAKNK42D.CHH.Fvb5.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb5 CHH context
+PropdiffALFL42D.CHH.Fvb5 <- profileAL42D.CHH.Fvb5$Proportion - profileFL42D.CHH.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb5 <- profileAL42D.CHH.Fvb5
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb5$PropdiffALFL42D.CHH.Fvb5 <- PropdiffALFL42D.CHH.Fvb5
+
+write.csv(profileALFL42D.CHH.Fvb5, "profileALFL42D.CHH.Fvb5.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb5 CHH context
+PropdiffALNL42D.CHH.Fvb5 <- profileAL42D.CHH.Fvb5$Proportion - profileNL42D.CHH.Fvb5$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb5 <- profileAL42D.CHH.Fvb5
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb5$PropdiffALNL42D.CHH.Fvb5 <- PropdiffALNL42D.CHH.Fvb5
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb5, "profileALNL42D.CHH.Fvb5.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb5 <- read.csv("profileAKFKNK42D.CHH.Fvb5.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb5 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb5, aes(x=end, y=Propdiff.CHH.Fvb5)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D chr5") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb5.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb5, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb5 <- read.csv("profileALFLNL42D.CHH.Fvb5.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb5 <- ggplot(Final_profileALFLNL42D.CHH.Fvb5, aes(x=end, y=Propdiff.CHH.Fvb5)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D chr5") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb5.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb5, device = "pdf", path="./", dpi=300)
+
+```
+
+
+```{r}
+##############C. Chromosome 6
+#Compute methylation profile for Fvb6
+
+regions_A_F_N.Fvb6 <- GRanges(seqnames = Rle("Fvb6"), ranges = IRanges(1,39795230))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb6   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb6 CG context
+PropdiffAKFK42D.CG.Fvb6 <- profileAK42D.CG.Fvb6$Proportion - profileFK42D.CG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb6 <- profileAK42D.CG.Fvb6
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb6$PropdiffAKFK42D.CG.Fvb6 <- PropdiffAKFK42D.CG.Fvb6
+
+write.csv(profileAKFK42D.CG.Fvb6, "profileAKFK42D.CG.Fvb6.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb6 CG context
+PropdiffAKNK42D.CG.Fvb6 <- profileAK42D.CG.Fvb6$Proportion - profileNK42D.CG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb6 <- profileAK42D.CG.Fvb6
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb6$PropdiffAKNK42D.CG.Fvb6 <- PropdiffAKNK42D.CG.Fvb6
+
+
+write.csv(profileAKNK42D.CG.Fvb6, "profileAKNK42D.CG.Fvb6.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb6 CG context
+PropdiffALFL42D.CG.Fvb6 <- profileAL42D.CG.Fvb6$Proportion - profileFL42D.CG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb6 <- profileAL42D.CG.Fvb6
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb6$PropdiffALFL42D.CG.Fvb6 <- PropdiffALFL42D.CG.Fvb6
+
+write.csv(profileALFL42D.CG.Fvb6, "profileALFL42D.CG.Fvb6.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb6 CG context
+PropdiffALNL42D.CG.Fvb6 <- profileAL42D.CG.Fvb6$Proportion - profileNL42D.CG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb6 <- profileAL42D.CG.Fvb6
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb6$PropdiffALNL42D.CG.Fvb6 <- PropdiffALNL42D.CG.Fvb6
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb6, "profileALNL42D.CG.Fvb6.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb6 <- read.csv("profileAKFKNK42D.CG.Fvb6.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb6 <- ggplot(Final_profileAKFKNK42D.CG.Fvb6, aes(x=end, y=Propdiff.CG.Fvb6)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D chr6") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb6.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb6, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb6 <- read.csv("profileALFLNL42D.CG.Fvb6.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb6 <- ggplot(Final_profileALFLNL42D.CG.Fvb6, aes(x=end, y=Propdiff.CG.Fvb6)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D chr6") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb6.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb6, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG Chr6 42D ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb6 CHG context
+PropdiffAKFK42D.CHG.Fvb6 <- profileAK42D.CHG.Fvb6$Proportion - profileFK42D.CHG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb6 <- profileAK42D.CHG.Fvb6
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb6$PropdiffAKFK42D.CHG.Fvb6 <- PropdiffAKFK42D.CHG.Fvb6
+
+write.csv(profileAKFK42D.CHG.Fvb6, "profileAKFK42D.CHG.Fvb6.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb6 CHG context
+PropdiffAKNK42D.CHG.Fvb6 <- profileAK42D.CHG.Fvb6$Proportion - profileNK42D.CHG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb6 <- profileAK42D.CHG.Fvb6
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb6$PropdiffAKNK42D.CHG.Fvb6 <- PropdiffAKNK42D.CHG.Fvb6
+
+
+write.csv(profileAKNK42D.CHG.Fvb6, "profileAKNK42D.CHG.Fvb6.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb6 CHG context
+PropdiffALFL42D.CHG.Fvb6 <- profileAL42D.CHG.Fvb6$Proportion - profileFL42D.CHG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb6 <- profileAL42D.CHG.Fvb6
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb6$PropdiffALFL42D.CHG.Fvb6 <- PropdiffALFL42D.CHG.Fvb6
+
+write.csv(profileALFL42D.CHG.Fvb6, "profileALFL42D.CHG.Fvb6.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb6 CHG context
+PropdiffALNL42D.CHG.Fvb6 <- profileAL42D.CHG.Fvb6$Proportion - profileNL42D.CHG.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb6 <- profileAL42D.CHG.Fvb6
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb6$PropdiffALNL42D.CHG.Fvb6 <- PropdiffALNL42D.CHG.Fvb6
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb6, "profileALNL42D.CHG.Fvb6.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb6 <- read.csv("profileAKFKNK42D.CHG.Fvb6.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb6 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb6, aes(x=end, y=Propdiff.CHG.Fvb6)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D chr6") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb6.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb6, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb6 <- read.csv("profileALFLNL42D.CHG.Fvb6.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb6 <- ggplot(Final_profileALFLNL42D.CHG.Fvb6, aes(x=end, y=Propdiff.CHG.Fvb6)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D chr6") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb6.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb6, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb6 CHH context
+PropdiffAKFK42D.CHH.Fvb6 <- profileAK42D.CHH.Fvb6$Proportion - profileFK42D.CHH.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb6 <- profileAK42D.CHH.Fvb6
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb6$PropdiffAKFK42D.CHH.Fvb6 <- PropdiffAKFK42D.CHH.Fvb6
+
+write.csv(profileAKFK42D.CHH.Fvb6, "profileAKFK42D.CHH.Fvb6.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb6 CHH context
+PropdiffAKNK42D.CHH.Fvb6 <- profileAK42D.CHH.Fvb6$Proportion - profileNK42D.CHH.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb6 <- profileAK42D.CHH.Fvb6
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb6$PropdiffAKNK42D.CHH.Fvb6 <- PropdiffAKNK42D.CHH.Fvb6
+
+
+write.csv(profileAKNK42D.CHH.Fvb6, "profileAKNK42D.CHH.Fvb6.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb6 CHH context
+PropdiffALFL42D.CHH.Fvb6 <- profileAL42D.CHH.Fvb6$Proportion - profileFL42D.CHH.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb6 <- profileAL42D.CHH.Fvb6
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb6$PropdiffALFL42D.CHH.Fvb6 <- PropdiffALFL42D.CHH.Fvb6
+
+write.csv(profileALFL42D.CHH.Fvb6, "profileALFL42D.CHH.Fvb6.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb6 CHH context
+PropdiffALNL42D.CHH.Fvb6 <- profileAL42D.CHH.Fvb6$Proportion - profileNL42D.CHH.Fvb6$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb6 <- profileAL42D.CHH.Fvb6
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb6$PropdiffALNL42D.CHH.Fvb6 <- PropdiffALNL42D.CHH.Fvb6
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb6, "profileALNL42D.CHH.Fvb6.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb6 <- read.csv("profileAKFKNK42D.CHH.Fvb6.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb6 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb6, aes(x=end, y=Propdiff.CHH.Fvb6)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D chr6") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb6.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb6, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb6 <- read.csv("profileALFLNL42D.CHH.Fvb6.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb6 <- ggplot(Final_profileALFLNL42D.CHH.Fvb6, aes(x=end, y=Propdiff.CHH.Fvb6)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D chr6") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb6.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb6, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+##############C. Chromosome 7
+#Compute methylation profile for Fvb7
+
+regions_A_F_N.Fvb7 <- GRanges(seqnames = Rle("Fvb7"), ranges = IRanges(1,24229589))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK42D
+profileAK42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK42D
+profileFK42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK42D
+profileNK42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL42D
+profileAL42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL42D
+profileFL42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL42D
+profileNL42D.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb7   #############
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb7 CG context
+PropdiffAKFK42D.CG.Fvb7 <- profileAK42D.CG.Fvb7$Proportion - profileFK42D.CG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CG.Fvb7 <- profileAK42D.CG.Fvb7
+
+#Appending methylation proportion difference
+profileAKFK42D.CG.Fvb7$PropdiffAKFK42D.CG.Fvb7 <- PropdiffAKFK42D.CG.Fvb7
+
+write.csv(profileAKFK42D.CG.Fvb7, "profileAKFK42D.CG.Fvb7.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb7 CG context
+PropdiffAKNK42D.CG.Fvb7 <- profileAK42D.CG.Fvb7$Proportion - profileNK42D.CG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CG.Fvb7 <- profileAK42D.CG.Fvb7
+
+#Appending methylation proportion difference
+profileAKNK42D.CG.Fvb7$PropdiffAKNK42D.CG.Fvb7 <- PropdiffAKNK42D.CG.Fvb7
+
+
+write.csv(profileAKNK42D.CG.Fvb7, "profileAKNK42D.CG.Fvb7.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb7 CG context
+PropdiffALFL42D.CG.Fvb7 <- profileAL42D.CG.Fvb7$Proportion - profileFL42D.CG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CG.Fvb7 <- profileAL42D.CG.Fvb7
+
+#Appending methylation proportion difference
+profileALFL42D.CG.Fvb7$PropdiffALFL42D.CG.Fvb7 <- PropdiffALFL42D.CG.Fvb7
+
+write.csv(profileALFL42D.CG.Fvb7, "profileALFL42D.CG.Fvb7.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb7 CG context
+PropdiffALNL42D.CG.Fvb7 <- profileAL42D.CG.Fvb7$Proportion - profileNL42D.CG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CG.Fvb7 <- profileAL42D.CG.Fvb7
+
+#Appending methylation proportion difference
+profileALNL42D.CG.Fvb7$PropdiffALNL42D.CG.Fvb7 <- PropdiffALNL42D.CG.Fvb7
+
+###Export File
+write.csv(profileALNL42D.CG.Fvb7, "profileALNL42D.CG.Fvb7.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CG.Fvb7 <- read.csv("profileAKFKNK42D.CG.Fvb7.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CG.Fvb7 <- ggplot(Final_profileAKFKNK42D.CG.Fvb7, aes(x=end, y=Propdiff.CG.Fvb7)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CG 42D chr7") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CG.Fvb7.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CG.Fvb7, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CG.Fvb7 <- read.csv("profileALFLNL42D.CG.Fvb7.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CG.Fvb7 <- ggplot(Final_profileALFLNL42D.CG.Fvb7, aes(x=end, y=Propdiff.CG.Fvb7)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CG 42D chr7") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CG.Fvb7.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CG.Fvb7, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+####  CHG Chr7 42D ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileFK42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK42D
+profileNK42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL42D
+profileAL42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL42D
+profileFL42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL42D
+profileNL42D.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb7 CHG context
+PropdiffAKFK42D.CHG.Fvb7 <- profileAK42D.CHG.Fvb7$Proportion - profileFK42D.CHG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHG.Fvb7 <- profileAK42D.CHG.Fvb7
+
+#Appending methylation proportion difference
+profileAKFK42D.CHG.Fvb7$PropdiffAKFK42D.CHG.Fvb7 <- PropdiffAKFK42D.CHG.Fvb7
+
+write.csv(profileAKFK42D.CHG.Fvb7, "profileAKFK42D.CHG.Fvb7.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb7 CHG context
+PropdiffAKNK42D.CHG.Fvb7 <- profileAK42D.CHG.Fvb7$Proportion - profileNK42D.CHG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHG.Fvb7 <- profileAK42D.CHG.Fvb7
+
+#Appending methylation proportion difference
+profileAKNK42D.CHG.Fvb7$PropdiffAKNK42D.CHG.Fvb7 <- PropdiffAKNK42D.CHG.Fvb7
+
+
+write.csv(profileAKNK42D.CHG.Fvb7, "profileAKNK42D.CHG.Fvb7.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb7 CHG context
+PropdiffALFL42D.CHG.Fvb7 <- profileAL42D.CHG.Fvb7$Proportion - profileFL42D.CHG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHG.Fvb7 <- profileAL42D.CHG.Fvb7
+
+#Appending methylation proportion difference
+profileALFL42D.CHG.Fvb7$PropdiffALFL42D.CHG.Fvb7 <- PropdiffALFL42D.CHG.Fvb7
+
+write.csv(profileALFL42D.CHG.Fvb7, "profileALFL42D.CHG.Fvb7.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb7 CHG context
+PropdiffALNL42D.CHG.Fvb7 <- profileAL42D.CHG.Fvb7$Proportion - profileNL42D.CHG.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHG.Fvb7 <- profileAL42D.CHG.Fvb7
+
+#Appending methylation proportion difference
+profileALNL42D.CHG.Fvb7$PropdiffALNL42D.CHG.Fvb7 <- PropdiffALNL42D.CHG.Fvb7
+
+###Export File
+write.csv(profileALNL42D.CHG.Fvb7, "profileALNL42D.CHG.Fvb7.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHG.Fvb7 <- read.csv("profileAKFKNK42D.CHG.Fvb7.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHG.Fvb7 <- ggplot(Final_profileAKFKNK42D.CHG.Fvb7, aes(x=end, y=Propdiff.CHG.Fvb7)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHG 42D chr7") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHG.Fvb7.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHG.Fvb7, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHG.Fvb7 <- read.csv("profileALFLNL42D.CHG.Fvb7.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHG.Fvb7 <- ggplot(Final_profileALFLNL42D.CHG.Fvb7, aes(x=end, y=Propdiff.CHG.Fvb7)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHG 42D chr7") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHG.Fvb7.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHG.Fvb7, device = "pdf", path="./", dpi=300)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK42D 
+profileAK42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileFK42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK42D
+profileNK42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL42D
+profileAL42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL42D
+profileFL42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL42D
+profileNL42D.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL42D"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+
+#Proportion difference in meth profile between AK42D and FK42D in Fvb7 CHH context
+PropdiffAKFK42D.CHH.Fvb7 <- profileAK42D.CHH.Fvb7$Proportion - profileFK42D.CHH.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK42D.CHH.Fvb7 <- profileAK42D.CHH.Fvb7
+
+#Appending methylation proportion difference
+profileAKFK42D.CHH.Fvb7$PropdiffAKFK42D.CHH.Fvb7 <- PropdiffAKFK42D.CHH.Fvb7
+
+write.csv(profileAKFK42D.CHH.Fvb7, "profileAKFK42D.CHH.Fvb7.csv")
+
+#Proportion difference in meth profile between AK42D and NCGR1363 in Fvb7 CHH context
+PropdiffAKNK42D.CHH.Fvb7 <- profileAK42D.CHH.Fvb7$Proportion - profileNK42D.CHH.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK42D.CHH.Fvb7 <- profileAK42D.CHH.Fvb7
+
+#Appending methylation proportion difference
+profileAKNK42D.CHH.Fvb7$PropdiffAKNK42D.CHH.Fvb7 <- PropdiffAKNK42D.CHH.Fvb7
+
+
+write.csv(profileAKNK42D.CHH.Fvb7, "profileAKNK42D.CHH.Fvb7.csv")
+
+
+#Proportion difference in meth profile between AL42D and FL42D in Fvb7 CHH context
+PropdiffALFL42D.CHH.Fvb7 <- profileAL42D.CHH.Fvb7$Proportion - profileFL42D.CHH.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL42D.CHH.Fvb7 <- profileAL42D.CHH.Fvb7
+
+#Appending methylation proportion difference
+profileALFL42D.CHH.Fvb7$PropdiffALFL42D.CHH.Fvb7 <- PropdiffALFL42D.CHH.Fvb7
+
+write.csv(profileALFL42D.CHH.Fvb7, "profileALFL42D.CHH.Fvb7.csv")
+
+#Proportion difference in meth profile between AL42D and NCGR1363 in Fvb7 CHH context
+PropdiffALNL42D.CHH.Fvb7 <- profileAL42D.CHH.Fvb7$Proportion - profileNL42D.CHH.Fvb7$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL42D.CHH.Fvb7 <- profileAL42D.CHH.Fvb7
+
+#Appending methylation proportion difference
+profileALNL42D.CHH.Fvb7$PropdiffALNL42D.CHH.Fvb7 <- PropdiffALNL42D.CHH.Fvb7
+
+###Export File
+write.csv(profileALNL42D.CHH.Fvb7, "profileALNL42D.CHH.Fvb7.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK42D.CHH.Fvb7 <- read.csv("profileAKFKNK42D.CHH.Fvb7.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK42D.CHH.Fvb7 <- ggplot(Final_profileAKFKNK42D.CHH.Fvb7, aes(x=end, y=Propdiff.CHH.Fvb7)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AK and FK NK CHH 42D chr7") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK42D.CHH.Fvb7.pdf', width=5.0, height=3.0, plot=Plot_Final_profileAKFKNK42D.CHH.Fvb7, device = "pdf", path="./", dpi=300)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL42D.CHH.Fvb7 <- read.csv("profileALFLNL42D.CHH.Fvb7.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL42D.CHH.Fvb7 <- ggplot(Final_profileALFLNL42D.CHH.Fvb7, aes(x=end, y=Propdiff.CHH.Fvb7)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Methylation difference between AL and FL NL CHH 42D chr7") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL42D.CHH.Fvb7.pdf', width=5.0, height=3.0, plot=Plot_Final_profileALFLNL42D.CHH.Fvb7, device = "pdf", path="./", dpi=300)
+
+```

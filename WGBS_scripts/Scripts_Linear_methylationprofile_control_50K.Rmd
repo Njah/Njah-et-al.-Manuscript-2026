@@ -1,0 +1,688 @@
+---
+title: "Linear_chromosome methylation profile"
+author: "Relindis"
+date: '2023-04-11'
+output: html_document
+---
+
+```{r}
+library("DMRcaller")
+
+AK0H.methylationData <- readBismark("AK0H.CX_report.txt.gz")
+
+FK0H.methylationData <- readBismark("FK0H.CX_report.txt.gz")
+
+NK0H.methylationData <- readBismark("NK0H.CX_report.txt.gz")
+
+AL0H.methylationData <- readBismark("AL0H.CX_report.txt.gz")
+
+FL0H.methylationData <- readBismark("FL0H.CX_report.txt.gz")
+
+NL0H.methylationData <- readBismark("NL0H.CX_report.txt.gz")
+
+#Store data from all files in a GRanges object
+
+methylationDataList_A_F_N <- GRangesList("AK0H" = AK0H.methylationData, "AL0H" = AL0H.methylationData,"FK0H" = FK0H.methylationData,"FL0H" = FL0H.methylationData,"NK0H" = NK0H.methylationData, "NL0H" = NL0H.methylationData)
+
+#Compute methylation profile for Fvb1, CG context using a window of 200k
+
+regions_A_F_N.Fvb1 <- GRanges(seqnames = Rle("Fvb1"), ranges = IRanges(1,24253023))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb1 <- GRangesList("AK0H" = profileAK0H.CG.Fvb1, "AL0H" = profileAL0H.CG.Fvb1, "FK0H" = profileFK0H.CG.Fvb1, "FL0H" = profileFL0H.CG.Fvb1, "NK0H" = profileNK0H.CG.Fvb1, "NL0H" = profileNL0H.CG.Fvb1)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb1=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb1,autoscale = FALSE,labels = NULL,title="CG-0H methylation on chr 1",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+ggsave('plot.A_F_N_CHG.Fvb1.svg', width=5.0, height=3.0, plot=plot.A_F_N_CHG.Fvb1, device = "svg", path="./", dpi=300)
+
+#*****************************************
+#Compute methylation profile for Fvb1, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb1 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb1, "AL0H" = profileAL0H.CHG.Fvb1, "FK0H" = profileFK0H.CHG.Fvb1, "FL0H" = profileFL0H.CHG.Fvb1, "NK0H" = profileNK0H.CHG.Fvb1, "NL0H" = profileNL0H.CHG.Fvb1)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb1=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb1,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on chr 1",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+##Export plot
+library(ggplot2)
+ggsave('plot.A_F_N_CHG.Fvb1.svg', width=5.0, height=3.0, plot=plot.A_F_N_CHG.Fvb1, device = "svg", path="./", dpi=300)
+
+#******************************************
+#Compute methylation profile for Fvb1, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb1 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb1, "AL0H" = profileAL0H.CHH.Fvb1, "FK0H" = profileFK0H.CHH.Fvb1, "FL0H" = profileFL0H.CHH.Fvb1, "NK0H" = profileNK0H.CHH.Fvb1, "NL0H" = profileNL0H.CHH.Fvb1)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb1=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb1,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on chr 1",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+##Export plot
+library(ggplot2)
+ggsave('plot.A_F_N_CHG.Fvb1.svg', width=5.0, height=3.0, plot=plot.A_F_N_CHG.Fvb1, device = "svg", path="./", dpi=300)
+#************************************************************
+
+
+#Compute methylation profile for Fvb2, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb2 <- GRanges(seqnames = Rle("Fvb2"), ranges = IRanges(1,29351230))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb2 <- GRangesList("AK0H" = profileAK0H.CG.Fvb2, "AL0H" = profileAL0H.CG.Fvb2, "FK0H" = profileFK0H.CG.Fvb2, "FL0H" = profileFL0H.CG.Fvb2, "NK0H" = profileNK0H.CG.Fvb2, "NL0H" = profileNL0H.CG.Fvb2)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb2=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb2,autoscale = FALSE,labels = NULL,title="CG-0H methylation on Chr 2",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb2, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb2 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb2, "AL0H" = profileAL0H.CHG.Fvb2, "FK0H" = profileFK0H.CHG.Fvb2, "FL0H" = profileFL0H.CHG.Fvb2, "NK0H" = profileNK0H.CHG.Fvb2, "NL0H" = profileNL0H.CHG.Fvb2)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb2=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb2,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on Chr 2",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb2, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb2 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb2, "AL0H" = profileAL0H.CHH.Fvb2, "FK0H" = profileFK0H.CHH.Fvb2, "FL0H" = profileFL0H.CHH.Fvb2, "NK0H" = profileNK0H.CHH.Fvb2, "NL0H" = profileNL0H.CHH.Fvb2)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb2=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb2,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on Chr 2",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb3, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb3 <- GRanges(seqnames = Rle("Fvb3"), ranges = IRanges(1,38324302))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb3 <- GRangesList("AK0H" = profileAK0H.CG.Fvb3, "AL0H" = profileAL0H.CG.Fvb3, "FK0H" = profileFK0H.CG.Fvb3, "FL0H" = profileFL0H.CG.Fvb3, "NK0H" = profileNK0H.CG.Fvb3, "NL0H" = profileNL0H.CG.Fvb3)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb3=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb3,autoscale = FALSE,labels = NULL,title="CG-0H methylation on Chr 3",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb3, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb3 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb3, "AL0H" = profileAL0H.CHG.Fvb3, "FK0H" = profileFK0H.CHG.Fvb3, "FL0H" = profileFL0H.CHG.Fvb3, "NK0H" = profileNK0H.CHG.Fvb3, "NL0H" = profileNL0H.CHG.Fvb3)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb3=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb3,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on Chr 3",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb3, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb3 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb3, "AL0H" = profileAL0H.CHH.Fvb3, "FK0H" = profileFK0H.CHH.Fvb3, "FL0H" = profileFL0H.CHH.Fvb3, "NK0H" = profileNK0H.CHH.Fvb3, "NL0H" = profileNL0H.CHH.Fvb3)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb3=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb3,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on Chr 3",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb4, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb4 <- GRanges(seqnames = Rle("Fvb4"), ranges = IRanges(1,33907851))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb4 <- GRangesList("AK0H" = profileAK0H.CG.Fvb4, "AL0H" = profileAL0H.CG.Fvb4, "FK0H" = profileFK0H.CG.Fvb4, "FL0H" = profileFL0H.CG.Fvb4, "NK0H" = profileNK0H.CG.Fvb4, "NL0H" = profileNL0H.CG.Fvb4)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb4=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb4,autoscale = FALSE,labels = NULL,title="CG-0H methylation on Chr 4",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb4, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb4 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb4, "AL0H" = profileAL0H.CHG.Fvb4, "FK0H" = profileFK0H.CHG.Fvb4, "FL0H" = profileFL0H.CHG.Fvb4, "NK0H" = profileNK0H.CHG.Fvb4, "NL0H" = profileNL0H.CHG.Fvb4)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb4=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb4,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on Chr 4",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb4, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb4<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb4,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb4 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb4, "AL0H" = profileAL0H.CHH.Fvb4, "FK0H" = profileFK0H.CHH.Fvb4, "FL0H" = profileFL0H.CHH.Fvb4, "NK0H" = profileNK0H.CHH.Fvb4, "NL0H" = profileNL0H.CHH.Fvb4)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb4=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb4,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on Chr 4",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb5, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb5 <- GRanges(seqnames = Rle("Fvb5"), ranges = IRanges(1,29430145))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb5 <- GRangesList("AK0H" = profileAK0H.CG.Fvb5, "AL0H" = profileAL0H.CG.Fvb5, "FK0H" = profileFK0H.CG.Fvb5, "FL0H" = profileFL0H.CG.Fvb5, "NK0H" = profileNK0H.CG.Fvb5, "NL0H" = profileNL0H.CG.Fvb5)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb5=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb5,autoscale = FALSE,labels = NULL,title="CG-0H methylation on Chr 5",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb5, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb5 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb5, "AL0H" = profileAL0H.CHG.Fvb5, "FK0H" = profileFK0H.CHG.Fvb5, "FL0H" = profileFL0H.CHG.Fvb5, "NK0H" = profileNK0H.CHG.Fvb5, "NL0H" = profileNL0H.CHG.Fvb5)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb5=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb5,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on Chr 5",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb5, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb5<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb5,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb5 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb5, "AL0H" = profileAL0H.CHH.Fvb5, "FK0H" = profileFK0H.CHH.Fvb5, "FL0H" = profileFL0H.CHH.Fvb5, "NK0H" = profileNK0H.CHH.Fvb5, "NL0H" = profileNL0H.CHH.Fvb5)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb5=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb5,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on Chr 5",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb6, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb6 <- GRanges(seqnames = Rle("Fvb6"), ranges = IRanges(1,39795230))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb6 <- GRangesList("AK0H" = profileAK0H.CG.Fvb6, "AL0H" = profileAL0H.CG.Fvb6, "FK0H" = profileFK0H.CG.Fvb6, "FL0H" = profileFL0H.CG.Fvb6, "NK0H" = profileNK0H.CG.Fvb6, "NL0H" = profileNL0H.CG.Fvb6)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb6=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb6,autoscale = FALSE,labels = NULL,title="CG-0H methylation on Chr 6",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb6, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb6 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb6, "AL0H" = profileAL0H.CHG.Fvb6, "FK0H" = profileFK0H.CHG.Fvb6, "FL0H" = profileFL0H.CHG.Fvb6, "NK0H" = profileNK0H.CHG.Fvb6, "NL0H" = profileNL0H.CHG.Fvb6)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb6=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb6,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on Chr 6",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb6, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb6<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb6,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb6 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb6, "AL0H" = profileAL0H.CHH.Fvb6, "FK0H" = profileFK0H.CHH.Fvb6, "FL0H" = profileFL0H.CHH.Fvb6, "NK0H" = profileNK0H.CHH.Fvb6, "NL0H" = profileNL0H.CHH.Fvb6)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb6=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb6,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on Chr 6",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+#************************************************************
+
+
+#Compute methylation profile for Fvb7, CG context using a window of 200k
+
+
+regions_A_F_N.Fvb7 <- GRanges(seqnames = Rle("Fvb7"), ranges = IRanges(1,24229589))
+
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CG")
+
+profilesA0H_F0H_N0H_CG.Fvb7 <- GRangesList("AK0H" = profileAK0H.CG.Fvb7, "AL0H" = profileAL0H.CG.Fvb7, "FK0H" = profileFK0H.CG.Fvb7, "FL0H" = profileFL0H.CG.Fvb7, "NK0H" = profileNK0H.CG.Fvb7, "NL0H" = profileNL0H.CG.Fvb7)
+
+#plot the low resolution profile for crown in CG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CG.Fvb7=plotMethylationProfile(profilesA0H_F0H_N0H_CG.Fvb7,autoscale = FALSE,labels = NULL,title="CG-0H methylation on Chr 7",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+#*****************************************
+#Compute methylation profile for Fvb7, CHG context using a window of 200k
+
+
+# compute low resolution  for AK0H
+profileAK0H.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FK0H
+profileFK0H.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHG")
+
+profilesA0H_F0H_N0H_CHG.Fvb7 <- GRangesList("AK0H" = profileAK0H.CHG.Fvb7, "AL0H" = profileAL0H.CHG.Fvb7, "FK0H" = profileFK0H.CHG.Fvb7, "FL0H" = profileFL0H.CHG.Fvb7, "NK0H" = profileNK0H.CHG.Fvb7, "NL0H" = profileNL0H.CHG.Fvb7)
+
+#plot the low resolution profile for crown in CHG context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHG.Fvb7=plotMethylationProfile(profilesA0H_F0H_N0H_CHG.Fvb7,autoscale = FALSE,labels = NULL,title="CHG-0H methylation on Chr 7",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+
+#******************************************
+#Compute methylation profile for Fvb7, CHH context using a window of 200k
+
+# compute low resolution  for AK0H
+profileAK0H.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FK0H
+profileFK0H.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb7<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb7,windowSize = 50000,context = "CHH")
+
+profilesA0H_F0H_N0H_CHH.Fvb7 <- GRangesList("AK0H" = profileAK0H.CHH.Fvb7, "AL0H" = profileAL0H.CHH.Fvb7, "FK0H" = profileFK0H.CHH.Fvb7, "FL0H" = profileFL0H.CHH.Fvb7, "NK0H" = profileNK0H.CHH.Fvb7, "NL0H" = profileNL0H.CHH.Fvb7)
+
+#plot the low resolution profile for crown in CHH context
+par(mar=c(4, 4, 3, 1)+0.1)
+par(mfrow=c(1,1))
+plot.A_F_N_CHH.Fvb7=plotMethylationProfile(profilesA0H_F0H_N0H_CHH.Fvb7,autoscale = FALSE,labels = NULL,title="CHH-0H methylation on Chr 7",col=c("blue","orange","red","black", "green","purple"),lty = c(4,1,4,1,4,1), pch = c(32,32,32,32,32,32))
+
+
+```

@@ -1,0 +1,941 @@
+```{r}
+library("DMRcaller")
+
+AK0H.methylationData <- readBismark("AK0H.CX_report.txt.gz")
+
+FK0H.methylationData <- readBismark("FK0H.CX_report.txt.gz")
+
+NK0H.methylationData <- readBismark("NK0H.CX_report.txt.gz")
+
+AL0H.methylationData <- readBismark("AL0H.CX_report.txt.gz")
+
+FL0H.methylationData <- readBismark("FL0H.CX_report.txt.gz")
+
+NL0H.methylationData <- readBismark("NL0H.CX_report.txt.gz")
+
+#Store data from all files in a GRanges object
+
+methylationDataList_A_F_N <- GRangesList("AK0H" = AK0H.methylationData, "AL0H" = AL0H.methylationData,"FK0H" = FK0H.methylationData,"FL0H" = FL0H.methylationData,"NK0H" = NK0H.methylationData, "NL0H" = NL0H.methylationData)
+
+
+#####  Chromosome 1
+
+#Compute methylation profile for Fvb1
+
+regions_A_F_N.Fvb1 <- GRanges(seqnames = Rle("Fvb1"), ranges = IRanges(1,24253023))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb1   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb1 CG context
+PropdiffAKFK0H.CG.Fvb1 <- profileAK0H.CG.Fvb1$Proportion - profileFK0H.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CG.Fvb1 <- profileAK0H.CG.Fvb1
+
+#Appending methylation proportion difference
+profileAKFK0H.CG.Fvb1$PropdiffAKFK0H.CG.Fvb1 <- PropdiffAKFK0H.CG.Fvb1
+
+write.csv(profileAKFK0H.CG.Fvb1, "profileAKFK0H.CG.Fvb1.csv")
+
+#Proportion difference in meth profile between AK0H and NCGR1363 in Fvb1 CG context
+PropdiffAKNK0H.CG.Fvb1 <- profileAK0H.CG.Fvb1$Proportion - profileNK0H.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CG.Fvb1 <- profileAK0H.CG.Fvb1
+
+#Appending methylation proportion difference
+profileAKNK0H.CG.Fvb1$PropdiffAKNK0H.CG.Fvb1 <- PropdiffAKNK0H.CG.Fvb1
+
+
+write.csv(profileAKNK0H.CG.Fvb1, "profileAKNK0H.CG.Fvb1.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb1 CG context
+PropdiffALFL0H.CG.Fvb1 <- profileAL0H.CG.Fvb1$Proportion - profileFL0H.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CG.Fvb1 <- profileAL0H.CG.Fvb1
+
+#Appending methylation proportion difference
+profileALFL0H.CG.Fvb1$PropdiffALFL0H.CG.Fvb1 <- PropdiffALFL0H.CG.Fvb1
+
+write.csv(profileALFL0H.CG.Fvb1, "profileALFL0H.CG.Fvb1.csv")
+
+#Proportion difference in meth profile between AL0H and NCGR1363 in Fvb1 CG context
+PropdiffALNL0H.CG.Fvb1 <- profileAL0H.CG.Fvb1$Proportion - profileNL0H.CG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CG.Fvb1 <- profileAL0H.CG.Fvb1
+
+#Appending methylation proportion difference
+profileALNL0H.CG.Fvb1$PropdiffALNL0H.CG.Fvb1 <- PropdiffALNL0H.CG.Fvb1
+
+###Export File
+write.csv(profileALNL0H.CG.Fvb1, "profileALNL0H.CG.Fvb1.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CG.Fvb1 <- read.csv("profileAKFKNK0H.CG.Fvb1.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CG.Fvb1 <- ggplot(Final_profileAKFKNK0H.CG.Fvb1, aes(x=end, y=Propdiff.CG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK CG relative to FK and NK chr1") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CG.Fvb1.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CG.Fvb1, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CG.Fvb1 <- read.csv("profileALFLNL0H.CG.Fvb1.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CG.Fvb1 <- ggplot(Final_profileALFLNL0H.CG.Fvb1, aes(x=end, y=Propdiff.CG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CG relative to FL and NL chr1") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CG.Fvb1.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CG.Fvb1, device = "svg", path="./", dpi=600)
+
+```
+
+####  CHG chr1 0H ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK0H 
+profileAK0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileFK0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb1   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb1 CHG context
+PropdiffAKFK0H.CHG.Fvb1 <- profileAK0H.CHG.Fvb1$Proportion - profileFK0H.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CHG.Fvb1 <- profileAK0H.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileAKFK0H.CHG.Fvb1$PropdiffAKFK0H.CHG.Fvb1 <- PropdiffAKFK0H.CHG.Fvb1
+
+write.csv(profileAKFK0H.CHG.Fvb1, "profileAKFK0H.CHG.Fvb1.csv")
+
+#Proportion difference in meth profile between AK0H and NCHGR1363 in Fvb1 CHG context
+PropdiffAKNK0H.CHG.Fvb1 <- profileAK0H.CHG.Fvb1$Proportion - profileNK0H.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CHG.Fvb1 <- profileAK0H.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileAKNK0H.CHG.Fvb1$PropdiffAKNK0H.CHG.Fvb1 <- PropdiffAKNK0H.CHG.Fvb1
+
+
+write.csv(profileAKNK0H.CHG.Fvb1, "profileAKNK0H.CHG.Fvb1.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb1 CHG context
+PropdiffALFL0H.CHG.Fvb1 <- profileAL0H.CHG.Fvb1$Proportion - profileFL0H.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CHG.Fvb1 <- profileAL0H.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileALFL0H.CHG.Fvb1$PropdiffALFL0H.CHG.Fvb1 <- PropdiffALFL0H.CHG.Fvb1
+
+write.csv(profileALFL0H.CHG.Fvb1, "profileALFL0H.CHG.Fvb1.csv")
+
+#Proportion difference in meth profile between AL0H and NCHGR1363 in Fvb1 CHG context
+PropdiffALNL0H.CHG.Fvb1 <- profileAL0H.CHG.Fvb1$Proportion - profileNL0H.CHG.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CHG.Fvb1 <- profileAL0H.CHG.Fvb1
+
+#Appending methylation proportion difference
+profileALNL0H.CHG.Fvb1$PropdiffALNL0H.CHG.Fvb1 <- PropdiffALNL0H.CHG.Fvb1
+
+###Export File
+write.csv(profileALNL0H.CHG.Fvb1, "profileALNL0H.CHG.Fvb1.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CHG.Fvb1 <- read.csv("profileAKFKNK0H.CHG.Fvb1.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CHG.Fvb1 <- ggplot(Final_profileAKFKNK0H.CHG.Fvb1, aes(x=end, y=Propdiff.CHG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK  CHG relative to FK and NK chr1") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CHG.Fvb1.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CHG.Fvb1, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CHG.Fvb1 <- read.csv("profileALFLNL0H.CHG.Fvb1.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CHG.Fvb1 <- ggplot(Final_profileALFLNL0H.CHG.Fvb1, aes(x=end, y=Propdiff.CHG.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL leaves CHG relative to FL and NL chr1") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CHG.Fvb1.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CHG.Fvb1, device = "svg", path="./", dpi=600)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK0H 
+profileAK0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileFK0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb1<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb1,windowSize = 50000,context = "CHH")
+
+
+#####   3. CHH Fvb1   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb1 CHH context
+PropdiffAKFK0H.CHH.Fvb1 <- profileAK0H.CHH.Fvb1$Proportion - profileFK0H.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CHH.Fvb1 <- profileAK0H.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileAKFK0H.CHH.Fvb1$PropdiffAKFK0H.CHH.Fvb1 <- PropdiffAKFK0H.CHH.Fvb1
+
+write.csv(profileAKFK0H.CHH.Fvb1, "profileAKFK0H.CHH.Fvb1.csv")
+
+#Proportion difference in meth profile between AK0H and NCHHR1363 in Fvb1 CHH context
+PropdiffAKNK0H.CHH.Fvb1 <- profileAK0H.CHH.Fvb1$Proportion - profileNK0H.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CHH.Fvb1 <- profileAK0H.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileAKNK0H.CHH.Fvb1$PropdiffAKNK0H.CHH.Fvb1 <- PropdiffAKNK0H.CHH.Fvb1
+
+
+write.csv(profileAKNK0H.CHH.Fvb1, "profileAKNK0H.CHH.Fvb1.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb1 CHH context
+PropdiffALFL0H.CHH.Fvb1 <- profileAL0H.CHH.Fvb1$Proportion - profileFL0H.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CHH.Fvb1 <- profileAL0H.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileALFL0H.CHH.Fvb1$PropdiffALFL0H.CHH.Fvb1 <- PropdiffALFL0H.CHH.Fvb1
+
+write.csv(profileALFL0H.CHH.Fvb1, "profileALFL0H.CHH.Fvb1.csv")
+
+#Proportion difference in meth profile between AL0H and NCHHR1363 in Fvb1 CHH context
+PropdiffALNL0H.CHH.Fvb1 <- profileAL0H.CHH.Fvb1$Proportion - profileNL0H.CHH.Fvb1$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CHH.Fvb1 <- profileAL0H.CHH.Fvb1
+
+#Appending methylation proportion difference
+profileALNL0H.CHH.Fvb1$PropdiffALNL0H.CHH.Fvb1 <- PropdiffALNL0H.CHH.Fvb1
+
+###Export File
+write.csv(profileALNL0H.CHH.Fvb1, "profileALNL0H.CHH.Fvb1.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CHH.Fvb1 <- read.csv("profileAKFKNK0H.CHH.Fvb1.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CHH.Fvb1 <- ggplot(Final_profileAKFKNK0H.CHH.Fvb1, aes(x=end, y=Propdiff.CHH.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK  CHH relative to FK and NK chr1") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CHH.Fvb1.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CHH.Fvb1, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CHH.Fvb1 <- read.csv("profileALFLNL0H.CHH.Fvb1.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CHH.Fvb1 <- ggplot(Final_profileALFLNL0H.CHH.Fvb1, aes(x=end, y=Propdiff.CHH.Fvb1)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of Alta leaves CHH relative to FDP817 and NCHHR1363") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CHH.Fvb1.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CHH.Fvb1, device = "svg", path="./", dpi=600)
+
+```
+##############B. Chromosome 2
+
+
+```{r}
+#Compute methylation profile for Fvb2
+
+regions_A_F_N.Fvb2 <- GRanges(seqnames = Rle("Fvb2"), ranges = IRanges(1,29351230))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb2   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb2 CG context
+PropdiffAKFK0H.CG.Fvb2 <- profileAK0H.CG.Fvb2$Proportion - profileFK0H.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CG.Fvb2 <- profileAK0H.CG.Fvb2
+
+#Appending methylation proportion difference
+profileAKFK0H.CG.Fvb2$PropdiffAKFK0H.CG.Fvb2 <- PropdiffAKFK0H.CG.Fvb2
+
+write.csv(profileAKFK0H.CG.Fvb2, "profileAKFK0H.CG.Fvb2.csv")
+
+#Proportion difference in meth profile between AK0H and NCGR1363 in Fvb2 CG context
+PropdiffAKNK0H.CG.Fvb2 <- profileAK0H.CG.Fvb2$Proportion - profileNK0H.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CG.Fvb2 <- profileAK0H.CG.Fvb2
+
+#Appending methylation proportion difference
+profileAKNK0H.CG.Fvb2$PropdiffAKNK0H.CG.Fvb2 <- PropdiffAKNK0H.CG.Fvb2
+
+
+write.csv(profileAKNK0H.CG.Fvb2, "profileAKNK0H.CG.Fvb2.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb2 CG context
+PropdiffALFL0H.CG.Fvb2 <- profileAL0H.CG.Fvb2$Proportion - profileFL0H.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CG.Fvb2 <- profileAL0H.CG.Fvb2
+
+#Appending methylation proportion difference
+profileALFL0H.CG.Fvb2$PropdiffALFL0H.CG.Fvb2 <- PropdiffALFL0H.CG.Fvb2
+
+write.csv(profileALFL0H.CG.Fvb2, "profileALFL0H.CG.Fvb2.csv")
+
+#Proportion difference in meth profile between AL0H and NCGR1363 in Fvb2 CG context
+PropdiffALNL0H.CG.Fvb2 <- profileAL0H.CG.Fvb2$Proportion - profileNL0H.CG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CG.Fvb2 <- profileAL0H.CG.Fvb2
+
+#Appending methylation proportion difference
+profileALNL0H.CG.Fvb2$PropdiffALNL0H.CG.Fvb2 <- PropdiffALNL0H.CG.Fvb2
+
+###Export File
+write.csv(profileALNL0H.CG.Fvb2, "profileALNL0H.CG.Fvb2.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CG.Fvb2 <- read.csv("profileAKFKNK0H.CG.Fvb2.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CG.Fvb2 <- ggplot(Final_profileAKFKNK0H.CG.Fvb2, aes(x=end, y=Propdiff.CG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK CG relative to FK and NK chr2") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CG.Fvb2.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CG.Fvb2, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CG.Fvb2 <- read.csv("profileALFLNL0H.CG.Fvb2.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CG.Fvb2 <- ggplot(Final_profileALFLNL0H.CG.Fvb2, aes(x=end, y=Propdiff.CG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CG relative to FL and NL chr2") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CG.Fvb2.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CG.Fvb2, device = "svg", path="./", dpi=600)
+
+```
+
+####  CHG Chr2 0H ####
+
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK0H 
+profileAK0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileFK0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb2   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb2 CHG context
+PropdiffAKFK0H.CHG.Fvb2 <- profileAK0H.CHG.Fvb2$Proportion - profileFK0H.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CHG.Fvb2 <- profileAK0H.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileAKFK0H.CHG.Fvb2$PropdiffAKFK0H.CHG.Fvb2 <- PropdiffAKFK0H.CHG.Fvb2
+
+write.csv(profileAKFK0H.CHG.Fvb2, "profileAKFK0H.CHG.Fvb2.csv")
+
+#Proportion difference in meth profile between AK0H and NCHGR1363 in Fvb2 CHG context
+PropdiffAKNK0H.CHG.Fvb2 <- profileAK0H.CHG.Fvb2$Proportion - profileNK0H.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CHG.Fvb2 <- profileAK0H.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileAKNK0H.CHG.Fvb2$PropdiffAKNK0H.CHG.Fvb2 <- PropdiffAKNK0H.CHG.Fvb2
+
+
+write.csv(profileAKNK0H.CHG.Fvb2, "profileAKNK0H.CHG.Fvb2.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb2 CHG context
+PropdiffALFL0H.CHG.Fvb2 <- profileAL0H.CHG.Fvb2$Proportion - profileFL0H.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CHG.Fvb2 <- profileAL0H.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileALFL0H.CHG.Fvb2$PropdiffALFL0H.CHG.Fvb2 <- PropdiffALFL0H.CHG.Fvb2
+
+write.csv(profileALFL0H.CHG.Fvb2, "profileALFL0H.CHG.Fvb2.csv")
+
+#Proportion difference in meth profile between AL0H and NCHGR1363 in Fvb2 CHG context
+PropdiffALNL0H.CHG.Fvb2 <- profileAL0H.CHG.Fvb2$Proportion - profileNL0H.CHG.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CHG.Fvb2 <- profileAL0H.CHG.Fvb2
+
+#Appending methylation proportion difference
+profileALNL0H.CHG.Fvb2$PropdiffALNL0H.CHG.Fvb2 <- PropdiffALNL0H.CHG.Fvb2
+
+###Export File
+write.csv(profileALNL0H.CHG.Fvb2, "profileALNL0H.CHG.Fvb2.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CHG.Fvb2 <- read.csv("profileAKFKNK0H.CHG.Fvb2.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CHG.Fvb2 <- ggplot(Final_profileAKFKNK0H.CHG.Fvb2, aes(x=end, y=Propdiff.CHG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK  CHG relative to FK and NK chr2") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CHG.Fvb2.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CHG.Fvb2, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CHG.Fvb2 <- read.csv("profileALFLNL0H.CHG.Fvb2.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CHG.Fvb2 <- ggplot(Final_profileALFLNL0H.CHG.Fvb2, aes(x=end, y=Propdiff.CHG.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CHG relative to FL and NL chr2") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CHG.Fvb2.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CHG.Fvb2, device = "svg", path="./", dpi=600)
+
+```
+
+```{r}
+
+
+#####   3. CHH Fvb2   #############
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK0H 
+profileAK0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileFK0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb2<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb2,windowSize = 50000,context = "CHH")
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb2 CHH context
+PropdiffAKFK0H.CHH.Fvb2 <- profileAK0H.CHH.Fvb2$Proportion - profileFK0H.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CHH.Fvb2 <- profileAK0H.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileAKFK0H.CHH.Fvb2$PropdiffAKFK0H.CHH.Fvb2 <- PropdiffAKFK0H.CHH.Fvb2
+
+write.csv(profileAKFK0H.CHH.Fvb2, "profileAKFK0H.CHH.Fvb2.csv")
+
+#Proportion difference in meth profile between AK0H and NCHHR1363 in Fvb2 CHH context
+PropdiffAKNK0H.CHH.Fvb2 <- profileAK0H.CHH.Fvb2$Proportion - profileNK0H.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CHH.Fvb2 <- profileAK0H.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileAKNK0H.CHH.Fvb2$PropdiffAKNK0H.CHH.Fvb2 <- PropdiffAKNK0H.CHH.Fvb2
+
+
+write.csv(profileAKNK0H.CHH.Fvb2, "profileAKNK0H.CHH.Fvb2.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb2 CHH context
+PropdiffALFL0H.CHH.Fvb2 <- profileAL0H.CHH.Fvb2$Proportion - profileFL0H.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CHH.Fvb2 <- profileAL0H.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileALFL0H.CHH.Fvb2$PropdiffALFL0H.CHH.Fvb2 <- PropdiffALFL0H.CHH.Fvb2
+
+write.csv(profileALFL0H.CHH.Fvb2, "profileALFL0H.CHH.Fvb2.csv")
+
+#Proportion difference in meth profile between AL0H and NCHHR1363 in Fvb2 CHH context
+PropdiffALNL0H.CHH.Fvb2 <- profileAL0H.CHH.Fvb2$Proportion - profileNL0H.CHH.Fvb2$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CHH.Fvb2 <- profileAL0H.CHH.Fvb2
+
+#Appending methylation proportion difference
+profileALNL0H.CHH.Fvb2$PropdiffALNL0H.CHH.Fvb2 <- PropdiffALNL0H.CHH.Fvb2
+
+###Export File
+write.csv(profileALNL0H.CHH.Fvb2, "profileALNL0H.CHH.Fvb2.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CHH.Fvb2 <- read.csv("profileAKFKNK0H.CHH.Fvb2.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CHH.Fvb2 <- ggplot(Final_profileAKFKNK0H.CHH.Fvb2, aes(x=end, y=Propdiff.CHH.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK  CHH relative to FK and NK chr2") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CHH.Fvb2.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CHH.Fvb2, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CHH.Fvb2 <- read.csv("profileALFLNL0H.CHH.Fvb2.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CHH.Fvb2 <- ggplot(Final_profileALFLNL0H.CHH.Fvb2, aes(x=end, y=Propdiff.CHH.Fvb2)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CHH relative to FL and NL chr2") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CHH.Fvb2.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CHH.Fvb2, device = "svg", path="./", dpi=600)
+
+```
+
+
+```{r}
+##############C. Chromosome 3
+#Compute methylation profile for Fvb3
+
+regions_A_F_N.Fvb3 <- GRanges(seqnames = Rle("Fvb3"), ranges = IRanges(1,38324302))
+
+# compute low resolution in CG context using a window of 50k
+# compute low resolution  for AK0H
+profileAK0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FK0H
+profileFK0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NK0H
+profileNK0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for AL0H
+profileAL0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for FL0H
+profileFL0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+# compute low resolution  for NL0H
+profileNL0H.CG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CG")
+
+
+#####   1. CG Fvb3   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb3 CG context
+PropdiffAKFK0H.CG.Fvb3 <- profileAK0H.CG.Fvb3$Proportion - profileFK0H.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CG.Fvb3 <- profileAK0H.CG.Fvb3
+
+#Appending methylation proportion difference
+profileAKFK0H.CG.Fvb3$PropdiffAKFK0H.CG.Fvb3 <- PropdiffAKFK0H.CG.Fvb3
+
+write.csv(profileAKFK0H.CG.Fvb3, "profileAKFK0H.CG.Fvb3.csv")
+
+#Proportion difference in meth profile between AK0H and NCGR1363 in Fvb3 CG context
+PropdiffAKNK0H.CG.Fvb3 <- profileAK0H.CG.Fvb3$Proportion - profileNK0H.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CG.Fvb3 <- profileAK0H.CG.Fvb3
+
+#Appending methylation proportion difference
+profileAKNK0H.CG.Fvb3$PropdiffAKNK0H.CG.Fvb3 <- PropdiffAKNK0H.CG.Fvb3
+
+
+write.csv(profileAKNK0H.CG.Fvb3, "profileAKNK0H.CG.Fvb3.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb3 CG context
+PropdiffALFL0H.CG.Fvb3 <- profileAL0H.CG.Fvb3$Proportion - profileFL0H.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CG.Fvb3 <- profileAL0H.CG.Fvb3
+
+#Appending methylation proportion difference
+profileALFL0H.CG.Fvb3$PropdiffALFL0H.CG.Fvb3 <- PropdiffALFL0H.CG.Fvb3
+
+write.csv(profileALFL0H.CG.Fvb3, "profileALFL0H.CG.Fvb3.csv")
+
+#Proportion difference in meth profile between AL0H and NCGR1363 in Fvb3 CG context
+PropdiffALNL0H.CG.Fvb3 <- profileAL0H.CG.Fvb3$Proportion - profileNL0H.CG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CG.Fvb3 <- profileAL0H.CG.Fvb3
+
+#Appending methylation proportion difference
+profileALNL0H.CG.Fvb3$PropdiffALNL0H.CG.Fvb3 <- PropdiffALNL0H.CG.Fvb3
+
+###Export File
+write.csv(profileALNL0H.CG.Fvb3, "profileALNL0H.CG.Fvb3.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CG.Fvb3 <- read.csv("profileAKFKNK0H.CG.Fvb3.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CG.Fvb3 <- ggplot(Final_profileAKFKNK0H.CG.Fvb3, aes(x=end, y=Propdiff.CG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK CG relative to FK and NK chr3") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CG.Fvb3.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CG.Fvb3, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CG.Fvb3 <- read.csv("profileALFLNL0H.CG.Fvb3.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CG.Fvb3 <- ggplot(Final_profileALFLNL0H.CG.Fvb3, aes(x=end, y=Propdiff.CG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c((0, 40000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000, 40000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CG relative to FL and NL chr3") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CG.Fvb3.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CG.Fvb3, device = "svg", path="./", dpi=600)
+
+```
+
+####  CHG Chr2 0H ####
+  
+# compute low resolution in CHG context using a window of 50k
+
+# compute low resolution  for AK0H 
+profileAK0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileFK0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NK0H
+profileNK0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for AL0H
+profileAL0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for FL0H
+profileFL0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+# compute low resolution  for NL0H
+profileNL0H.CHG.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHG")
+
+
+#####   2. CHG Fvb3   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb3 CHG context
+PropdiffAKFK0H.CHG.Fvb3 <- profileAK0H.CHG.Fvb3$Proportion - profileFK0H.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CHG.Fvb3 <- profileAK0H.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileAKFK0H.CHG.Fvb3$PropdiffAKFK0H.CHG.Fvb3 <- PropdiffAKFK0H.CHG.Fvb3
+
+write.csv(profileAKFK0H.CHG.Fvb3, "profileAKFK0H.CHG.Fvb3.csv")
+
+#Proportion difference in meth profile between AK0H and NCHGR1363 in Fvb3 CHG context
+PropdiffAKNK0H.CHG.Fvb3 <- profileAK0H.CHG.Fvb3$Proportion - profileNK0H.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CHG.Fvb3 <- profileAK0H.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileAKNK0H.CHG.Fvb3$PropdiffAKNK0H.CHG.Fvb3 <- PropdiffAKNK0H.CHG.Fvb3
+
+
+write.csv(profileAKNK0H.CHG.Fvb3, "profileAKNK0H.CHG.Fvb3.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb3 CHG context
+PropdiffALFL0H.CHG.Fvb3 <- profileAL0H.CHG.Fvb3$Proportion - profileFL0H.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CHG.Fvb3 <- profileAL0H.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileALFL0H.CHG.Fvb3$PropdiffALFL0H.CHG.Fvb3 <- PropdiffALFL0H.CHG.Fvb3
+
+write.csv(profileALFL0H.CHG.Fvb3, "profileALFL0H.CHG.Fvb3.csv")
+
+#Proportion difference in meth profile between AL0H and NCHGR1363 in Fvb3 CHG context
+PropdiffALNL0H.CHG.Fvb3 <- profileAL0H.CHG.Fvb3$Proportion - profileNL0H.CHG.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CHG.Fvb3 <- profileAL0H.CHG.Fvb3
+
+#Appending methylation proportion difference
+profileALNL0H.CHG.Fvb3$PropdiffALNL0H.CHG.Fvb3 <- PropdiffALNL0H.CHG.Fvb3
+
+###Export File
+write.csv(profileALNL0H.CHG.Fvb3, "profileALNL0H.CHG.Fvb3.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CHG.Fvb3 <- read.csv("profileAKFKNK0H.CHG.Fvb3.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CHG.Fvb3 <- ggplot(Final_profileAKFKNK0H.CHG.Fvb3, aes(x=end, y=Propdiff.CHG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK  CHG relative to FK and NK chr3") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CHG.Fvb3.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CHG.Fvb3, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CHG.Fvb3 <- read.csv("profileALFLNL0H.CHG.Fvb3.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CHG.Fvb3 <- ggplot(Final_profileALFLNL0H.CHG.Fvb3, aes(x=end, y=Propdiff.CHG.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 30000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CHG relative to FL and NL chr3") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CHG.Fvb3.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CHG.Fvb3, device = "svg", path="./", dpi=600)
+
+```
+
+```{r}
+
+# compute low resolution in CHH context using a window of 50k
+
+# compute low resolution  for AK0H 
+profileAK0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileFK0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NK0H
+profileNK0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NK0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for AL0H
+profileAL0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["AL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for FL0H
+profileFL0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["FL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+# compute low resolution  for NL0H
+profileNL0H.CHH.Fvb3<- computeMethylationProfile(methylationDataList_A_F_N[["NL0H"]],regions_A_F_N.Fvb3,windowSize = 50000,context = "CHH")
+
+
+#####   3. CHH Fvb3   #############
+
+
+#Proportion difference in meth profile between AK0H and FK0H in Fvb3 CHH context
+PropdiffAKFK0H.CHH.Fvb3 <- profileAK0H.CHH.Fvb3$Proportion - profileFK0H.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKFK0H.CHH.Fvb3 <- profileAK0H.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileAKFK0H.CHH.Fvb3$PropdiffAKFK0H.CHH.Fvb3 <- PropdiffAKFK0H.CHH.Fvb3
+
+write.csv(profileAKFK0H.CHH.Fvb3, "profileAKFK0H.CHH.Fvb3.csv")
+
+#Proportion difference in meth profile between AK0H and NCHHR1363 in Fvb3 CHH context
+PropdiffAKNK0H.CHH.Fvb3 <- profileAK0H.CHH.Fvb3$Proportion - profileNK0H.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileAKNK0H.CHH.Fvb3 <- profileAK0H.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileAKNK0H.CHH.Fvb3$PropdiffAKNK0H.CHH.Fvb3 <- PropdiffAKNK0H.CHH.Fvb3
+
+
+write.csv(profileAKNK0H.CHH.Fvb3, "profileAKNK0H.CHH.Fvb3.csv")
+
+
+#Proportion difference in meth profile between AL0H and FL0H in Fvb3 CHH context
+PropdiffALFL0H.CHH.Fvb3 <- profileAL0H.CHH.Fvb3$Proportion - profileFL0H.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALFL0H.CHH.Fvb3 <- profileAL0H.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileALFL0H.CHH.Fvb3$PropdiffALFL0H.CHH.Fvb3 <- PropdiffALFL0H.CHH.Fvb3
+
+write.csv(profileALFL0H.CHH.Fvb3, "profileALFL0H.CHH.Fvb3.csv")
+
+#Proportion difference in meth profile between AL0H and NCHHR1363 in Fvb3 CHH context
+PropdiffALNL0H.CHH.Fvb3 <- profileAL0H.CHH.Fvb3$Proportion - profileNL0H.CHH.Fvb3$Proportion
+
+#Create a new file for appending methprop difference
+profileALNL0H.CHH.Fvb3 <- profileAL0H.CHH.Fvb3
+
+#Appending methylation proportion difference
+profileALNL0H.CHH.Fvb3$PropdiffALNL0H.CHH.Fvb3 <- PropdiffALNL0H.CHH.Fvb3
+
+###Export File
+write.csv(profileALNL0H.CHH.Fvb3, "profileALNL0H.CHH.Fvb3.csv")
+
+###Read edited file containing AK vs FK and NK proportion values
+
+Final_profileAKFKNK0H.CHH.Fvb3 <- read.csv("profileAKFKNK0H.CHH.Fvb3.csv")
+
+##Generate plots
+library(ggplot2)
+
+Plot_Final_profileAKFKNK0H.CHH.Fvb3 <- ggplot(Final_profileAKFKNK0H.CHH.Fvb3, aes(x=end, y=Propdiff.CHH.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AK_FK" = "cyan", "AK_NK" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AK  CHH relative to FK and NK chr3") + theme(plot.title = element_text(hjust=0.5))
+##Export plot
+library(svglite)
+ggsave('Plot_Final_profileAKFKNK0H.CHH.Fvb3.svg', width=8.0, height=4.0, plot=Plot_Final_profileAKFKNK0H.CHH.Fvb3, device = "svg", path="./", dpi=600)
+
+
+##********************
+###Read edited file containing AL vs FL and NL proportion values
+
+Final_profileALFLNL0H.CHH.Fvb3 <- read.csv("profileALFLNL0H.CHH.Fvb3.csv")
+
+##Generate plots
+
+Plot_Final_profileALFLNL0H.CHH.Fvb3 <- ggplot(Final_profileALFLNL0H.CHH.Fvb3, aes(x=end, y=Propdiff.CHH.Fvb3)) + geom_line(aes(color = group, alpha = 0.2))+ theme(panel.background = element_blank())+ scale_color_manual (values = c ("AL_FL" = "cyan", "AL_NL" = "red"))+ scale_y_continuous(limits = c(-0.5, 0.5), breaks = c(-0.5, -0.3, -0.1, 0, 0.1, 0.3, 0.5))+ scale_x_continuous(limits = c(0, 25000000), breaks = c(0, 5000000, 10000000, 15000000, 20000000, 25000000))+theme(panel.background = element_blank())+ geom_vline(xintercept = 0, color = "grey")+ geom_hline(yintercept=0, color = "grey")+xlab("chromosome coordinates") + ylab("Proportion difference")+ labs(title = "Proportion of AL CHH relative to FL and NL chr3") + theme(plot.title = element_text(hjust=0.5))
+
+##Export plots
+library(svglite)
+ggsave('Plot_Final_profileALFLNL0H.CHH.Fvb3.svg', width=8.0, height=4.0, plot=Plot_Final_profileALFLNL0H.CHH.Fvb3, device = "svg", path="./", dpi=600)
+
+```
+
+
